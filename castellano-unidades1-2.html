@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Lengua Castellana 3º · Unidades 1 y 2</title>
-<meta name="description" content="Repaso interactivo de Lengua Castellana de 3º de Primaria: sonido K, sonido G suave, sinónimos, antónimos, comprensión lectora y el poema.">
+<title>Lengua Castellana 3º · Repaso</title>
+<meta name="description" content="Repaso interactivo de Lengua Castellana de 3º de Primaria: sonidos K, G suave y G fuerte, sinónimos, antónimos, palabras polisémicas, comprensión lectora y el poema.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -195,6 +195,17 @@ button,input,textarea{font-family:inherit;color:inherit}
 .pq .tin{--w:70px}
 h4.sub{font-size:20px;margin:18px 0 10px}
 
+/* elegir letra */
+.lpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.lpcard{border:3px solid var(--ink);border-radius:18px;padding:10px;background:var(--bg2);text-align:center;box-shadow:0 4px 0 rgba(43,45,66,.12)}
+.lpcard .word{font-size:25px;font-weight:600;margin:4px 0 10px}
+.hole{display:inline-block;min-width:42px;padding:0 4px;border-bottom:4px solid var(--mc);background:#fff;border-radius:8px 8px 2px 2px;color:#b9ad97}
+.hole.on{color:#1d4ed8}
+.hole.ok{background:var(--goodbg);color:#11663a;border-bottom-color:var(--good)}
+.hole.ko{background:var(--badbg);color:#a3142a;border-bottom-color:var(--bad)}
+.lopts{display:flex;gap:8px;justify-content:center}
+.lopts .opt{padding:6px 16px;font-size:21px;font-weight:700;justify-content:center;min-width:54px}
+.lpcard.miss{border-color:var(--bad)}
 /* abiertas */
 .open-q{margin-bottom:14px}
 .open-q label{display:block;font-weight:600;font-size:19px;margin-bottom:6px}
@@ -242,6 +253,11 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
   .bucket .bh{font-size:16px;padding:5px}
   .zone-items .chip{font-size:14px;padding:4px 8px}
   .pairs{grid-template-columns:1fr}
+  .lpgrid{grid-template-columns:1fr 1fr;gap:8px}
+  .lpcard{padding:8px 4px}
+  .lpcard .word{font-size:19px;margin:2px 0 8px}
+  .lopts{gap:5px}
+  .lopts .opt{padding:5px 10px;font-size:18px;min-width:42px}
   .lines{line-height:2.1}
   .buddy .mascot{width:62px;height:62px}
   .buddy .say{font-size:15px}
@@ -274,14 +290,14 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
     <div class="hero">
       <div id="heroMascot"></div>
       <div>
-        <span class="badge" style="background:#3a86ff">Unidades 1 y 2</span>
+        <span class="badge" style="background:#3a86ff">Repaso de Lengua</span>
         <h1>¡Repasamos para el <span class="hl">examen</span>!</h1>
         <div class="speech" id="heroSpeech">¡Hola! Soy <b>Leo</b> 📖. Elige un tema, haz los ejercicios y pulsa <b>Corregir</b> al final. Si fallas algo, ¡repítelo para mejorar!</div>
       </div>
     </div>
     <div class="missions" id="missions"></div>
     <button class="teacher-btn" id="reportBtn"><span class="ic">📝</span><span>Mis respuestas para la profe<small>Lo que has escrito, listo para imprimir</small></span></button>
-    <div class="foot">Lengua Castellana 3º · Unidades 1 y 2 · <button class="linkbtn" id="resetBtn">Borrar mi progreso</button></div>
+    <div class="foot">Lengua Castellana 3º · <button class="linkbtn" id="resetBtn">Borrar mi progreso</button></div>
   </section>
 
   <!-- ============ SECCIÓN ============ -->
@@ -341,20 +357,20 @@ const SECTIONS = [
 {
   id:'k', title:'El sonido K', emoji:'🧀', color:'#3a86ff', bg:'#dbe8ff',
   recuerda:[
-    {e:'🐌', t:'C delante de a, o, u', d:'El sonido K se escribe con <b>c</b> delante de <b>a, o, u</b>.', x:'casa, colegio, cubo, caracol'},
+    {e:'🐌', t:'C delante de a, o, u', d:'El sonido K se escribe con <b>c</b> delante de <b>a, o, u</b>.', x:'casa, cocido, cuchara, caracol'},
     {e:'🧀', t:'QU delante de e, i', d:'El sonido K se escribe con <b>qu</b> delante de <b>e, i</b>. ¡La <b>u</b> no suena!', x:'queso, bosque, equipo, mosquito'},
     {e:'💡', t:'Truco', d:'Mira la vocal que va <b>después</b>: si es <b>e</b> o <b>i</b> → <b>qu</b>. Si es <b>a, o, u</b> → <b>c</b>.', x:'ca · que · qui · co · cu'}
   ],
   ex:[
-    {type:'sort', title:'¿C o QU?', help:'Arrastra cada palabra a su grupo. Cuando termines, pulsa <b>Corregir</b>.',
-      buckets:[{id:'c',label:'Con c (ca, co, cu)',bc:'#dbe8ff'},{id:'q',label:'Con qu (que, qui)',bc:'#fff1c9'}],
-      items:[['casa','c'],['cubo','c'],['colegio','c'],['cuento','c'],['escondite','c'],['parque','q'],['queso','q'],['Quique','q'],['quinto','q'],['raqueta','q'],['mosquito','q'],['pequeño','q']]},
-    {type:'type', title:'Escribe c o qu', help:'Escribe en cada hueco <b>c</b> o <b>qu</b>.', cls:'list',
+    {id:'k-1', type:'type', title:'Escribe c o qu', help:'Escribe en cada hueco <b>c</b> o <b>qu</b>.', cls:'list',
       lines:['🐌 {c}aracol','🪁 {c}ometa','🧀 {qu}eso','🎾 ra{qu}eta','⛷️ es{qu}íes','🍬 {c}aramelos','🧈 mante{qu}illa','🌲 bos{qu}e','🦟 mos{qu}ito','🏫 {c}olegio']},
-    {type:'dragblanks', title:'Completa las oraciones', help:'Arrastra la palabra bien escrita a cada hueco. ¡Cuidado: hay palabras mal escritas!',
-      text:['Vimos un [caracol] en el camino.','Esta [cometa] es de Carla.','Lucas come galletas de [mantequilla].','Me encanta la tarta de [queso].','Maca vive en el [quinto] piso.'],
-      extra:['carakol','qeso','cinto','qometa']},
-    {type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
+    {id:'k-lp', type:'letterpick', title:'¿C o QU?', help:'Toca la letra que falta en cada palabra. Al final pulsa <b>Corregir</b>.', opts:['c','qu'],
+      words:['🍲 {c}ocido','🧀 {qu}eso','🥄 {c}uchara','📦 pa{qu}ete','1️⃣5️⃣ {qu}ince','🥖 bo{c}adillo','🏙️ es{qu}ina','🐰 {c}onejo','💄 ma{qu}illaje','⛑️ {c}asco']},
+    {id:'k-fr', type:'type', title:'Completa las oraciones', help:'Escribe <b>c</b> o <b>qu</b> en cada hueco.', cls:'list',
+      lines:['En el desayuno como pan con {qu}eso.','Mi abuela prepara un {c}ocido buenísimo.','Vimos un {c}aracol en el par{qu}e.','Tengo {qu}ince {c}aramelos en la bolsa.','Pedro juega con su ra{qu}eta en el {c}olegio.','El mos{qu}ito me ha picado en la {c}ara.']},
+    {id:'k-ad', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¡Cuidado con la <b>c</b> y la <b>qu</b>!', cls:'list',
+      lines:['🧀 Se hace con leche: {queso@q....}','🐌 Lleva su casa a cuestas: {caracol@c......}','🦟 Insecto que pica por la noche: {mosquito@m.......}','🎾 Sirve para jugar al tenis: {raqueta@r......}','🥄 Sirve para comer la sopa: {cuchara@c......}','🌲 Lugar con muchos árboles: {bosque@b.....}','🍲 Plato de garbanzos y verduras: {cocido@c.....}']},
+    {id:'k-3', type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
       prompts:[{q:'Escribe tres palabras con c (ca, co, cu).', ph:'Ejemplo: ...'},{q:'Escribe tres palabras con qu (que, qui).'},{q:'Inventa una oración con una palabra que lleve qu.', lines:2}]}
   ]
 },
@@ -362,20 +378,53 @@ const SECTIONS = [
   id:'g', title:'El sonido G suave', emoji:'🐧', color:'#06b6a4', bg:'#d4f5f1',
   recuerda:[
     {e:'💧', t:'G delante de a, o, u', d:'Se escribe <b>g</b> delante de <b>a, o, u</b>.', x:'amiga, gota, gustar, agua'},
-    {e:'🧸', t:'GU delante de e, i', d:'Se escribe <b>gu</b> delante de <b>e, i</b> cuando la <b>u no suena</b>.', x:'juguete, guitarra, manguitos'},
+    {e:'🍝', t:'GU delante de e, i', d:'Se escribe <b>gu</b> delante de <b>e, i</b> cuando la <b>u no suena</b>.', x:'guiso, espaguetis, hamburguesa, juguete'},
     {e:'🐧', t:'GÜ delante de e, i', d:'Se escribe <b>gü</b> (con diéresis) delante de <b>e, i</b> cuando la <b>u sí suena</b>.', x:'pingüino, vergüenza, cigüeña, agüita'}
   ],
   ex:[
-    {type:'sort', title:'Clasifica en tres grupos', help:'Arrastra cada palabra a su grupo y pulsa <b>Corregir</b>.',
-      buckets:[{id:'g',label:'ga, go, gu',bc:'#d4f5f1'},{id:'gu',label:'gue, gui',bc:'#fff1c9'},{id:'gü',label:'güe, güi',bc:'#ece2ff'}],
-      items:[['bigote','g'],['agua','g'],['águila','g'],['regadera','g'],['gusano','g'],['guepardo','gu'],['higuera','gu'],['guiño','gu'],['juguete','gu'],['aguijón','gu'],['pingüino','gü'],['cigüeña','gü'],['bilingüe','gü'],['piragüista','gü']]},
-    {type:'type', title:'Escribe g, gu o gü', help:'Escribe en cada hueco <b>g</b>, <b>gu</b> o <b>gü</b>. ¡No olvides la diéresis (ü) cuando la u suena!', cls:'list',
+    {id:'g-1', type:'type', title:'Escribe g, gu o gü', help:'Escribe en cada hueco <b>g</b>, <b>gu</b> o <b>gü</b>. ¡No olvides la diéresis (ü) cuando la u suena!', cls:'list',
       lines:['🔥 ho{gu}era','🍽️ se{gu}idor','🚣 pira{gü}ismo','🐦 jil{gu}ero','🕳️ a{g}ujero','🐧 pin{gü}ino','🎸 {gu}itarra','👧 ami{g}a','😳 ver{gü}enza','☂️ para{g}uas']},
-    {type:'dragblanks', title:'Completa las oraciones', help:'Arrastra la palabra bien escrita a cada hueco.',
-      text:['Águeda toca la [guitarra].','Hugo abre su [juguete] nuevo.','Olga come [galletas] de chocolate.','La [cigüeña] hace su nido en el campanario.','Me da [vergüenza] cantar delante de todos.'],
-      extra:['gitarra','jugete','cigueña','verguenza']},
-    {type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
+    {id:'g-lp', type:'letterpick', title:'¿G, GU o GÜ?', help:'Toca lo que falta en cada palabra. Al final pulsa <b>Corregir</b>.', opts:['g','gu','gü'],
+      words:['🍲 {gu}iso','🍝 espa{gu}etis','🍔 hambur{gu}esa','🐧 pin{gü}ino','🐱 {g}ato','🕊️ ci{gü}eña','💧 {g}ota','🚿 man{gu}era','🥤 a{gü}ita','🐛 {g}usano','🧸 ju{gu}ete','🧢 {g}orra']},
+    {id:'g-fr', type:'type', title:'Completa las oraciones', help:'Escribe <b>g</b>, <b>gu</b> o <b>gü</b> en cada hueco.', cls:'list',
+      lines:['Mi abuela hace un {gu}iso de patatas.','Hoy comemos espa{gu}etis con tomate.','Pedimos una hambur{gu}esa con queso.','El pin{gü}ino se tira al a{g}ua.','Toco la {gu}itarra con mi ami{g}a.','La ci{gü}eña vuela muy alto.']},
+    {id:'g-ad', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¡Acuérdate de la diéresis cuando la u suena!', cls:'list',
+      lines:['🐧 Ave que no vuela y vive en el frío: {pingüino@p.......}','🎸 Instrumento con seis cuerdas: {guitarra@g.......}','🍝 Pasta larga y fina: {espaguetis@e.........}','🍔 Carne redonda dentro de un pan: {hamburguesa@h..........}','💧 Cae del grifo o de la lluvia: {gota@g...}','🐛 Animal pequeño que vive en la tierra: {gusano@g.....}','🧸 Sirve para jugar: {juguete@j......}']},
+    {id:'g-3', type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
       prompts:[{q:'Escribe dos palabras con ga, go o gu.'},{q:'Escribe dos palabras con gue o gui.'},{q:'Escribe dos palabras con güe o güi.'},{q:'Inventa una oración con una palabra que lleve gü.', lines:2}]}
+  ]
+},
+{
+  id:'j', title:'El sonido G fuerte (g y j)', emoji:'🌻', color:'#0ea5e9', bg:'#d9f1fc',
+  recuerda:[
+    {e:'🦒', t:'J con todas las vocales', d:'El sonido G fuerte se escribe con <b>j</b> delante de <b>a, e, i, o, u</b>.', x:'jamón, perejil, jirafa, joya, jugar'},
+    {e:'🌻', t:'G delante de e, i', d:'La <b>g</b> delante de <b>e, i</b> también suena <b>fuerte</b>.', x:'gente, gelatina, girasol, gigante'},
+    {e:'🤔', t:'¿ge o je? ¿gi o ji?', d:'Suenan <b>igual</b>, así que hay que <b>fijarse bien</b> y aprenderlas.', x:'gelatina, girasol · perejil, berenjena'},
+    {e:'🧪', t:'Truco: -aje', d:'Las palabras que terminan en <b>-aje</b> se escriben con <b>j</b>.', x:'brebaje, viaje, garaje'},
+    {e:'⚠️', t:'¡No te líes!', d:'<b>ga, go, gu</b> suenan <b>suave</b> (gato). Para el sonido fuerte con a, o, u siempre <b>j</b>: <b>ja, jo, ju</b>.', x:'gato · jamón'}
+  ],
+  ex:[
+    {id:'j-1', type:'type', title:'Escribe g o j', help:'Escribe en cada hueco <b>g</b> o <b>j</b>.', cls:'list',
+      lines:['🌿 pere{j}il','🍮 {g}elatina','🧪 breba{j}e','🌻 {g}irasol','🍆 beren{j}ena','🦒 {j}irafa','👥 {g}ente','🍖 {j}amón','👂 ore{j}a','🪄 ma{g}ia','✂️ ti{j}eras','🚗 gara{j}e']},
+    {id:'j-lp', type:'letterpick', title:'¿G o J?', help:'Toca la letra que falta en cada palabra.', opts:['g','j'],
+      words:['⚽ {j}ugar','🤸 {g}imnasia','✈️ via{j}e','💎 {j}oya','😎 {g}enial','🔴 ro{j}o','👔 {j}efe','🧼 {j}abón','🏫 cole{g}io','🥦 ve{g}etal']},
+    {id:'j-fr', type:'type', title:'Completa las oraciones', help:'Escribe <b>g</b> o <b>j</b> en cada hueco.', cls:'list',
+      lines:['En el huerto hay {g}irasoles y beren{j}enas.','El cocinero pone pere{j}il en la sopa.','De postre tenemos {g}elatina de fresa.','La bru{j}a prepara un breba{j}e mágico.','La {j}irafa es el animal más alto.','Mucha {g}ente via{j}a en tren.']},
+    {id:'j-ad', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¿Va con <b>g</b> o con <b>j</b>?', cls:'list',
+      lines:['🌻 Flor grande y amarilla que mira al sol: {girasol@g......}','🍆 Hortaliza de color morado: {berenjena@b........}','🦒 Animal con el cuello muy largo: {jirafa@j.....}','🍮 Postre que tiembla: {gelatina@g.......}','🌿 Hierba verde para dar sabor a la comida: {perejil@p......}','✂️ Sirven para cortar papel: {tijeras@t......}','🧼 Lo usamos para lavarnos las manos: {jabón|jabon@j....}']},
+    {id:'j-so', type:'choice', title:'¿Cómo suena la G?', help:'Lee la palabra en voz alta. ¿La <b>g</b> suena suave o fuerte?',
+      questions:[
+        {q:'GATO', o:['Suave, como en guiso','Fuerte, como en jamón'], a:0, keep:true},
+        {q:'GENTE', o:['Suave, como en guiso','Fuerte, como en jamón'], a:1, keep:true},
+        {q:'GIRASOL', o:['Suave, como en guiso','Fuerte, como en jamón'], a:1, keep:true},
+        {q:'HAMBURGUESA', o:['Suave, como en guiso','Fuerte, como en jamón'], a:0, keep:true},
+        {q:'GELATINA', o:['Suave, como en guiso','Fuerte, como en jamón'], a:1, keep:true},
+        {q:'GORRA', o:['Suave, como en guiso','Fuerte, como en jamón'], a:0, keep:true},
+        {q:'ESPAGUETIS', o:['Suave, como en guiso','Fuerte, como en jamón'], a:0, keep:true},
+        {q:'MAGIA', o:['Suave, como en guiso','Fuerte, como en jamón'], a:1, keep:true}
+      ]},
+    {id:'j-op', type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
+      prompts:[{q:'Escribe dos palabras con ge o gi.'},{q:'Escribe dos palabras con je o ji.'},{q:'Escribe dos palabras con ja, jo o ju.'},{q:'Inventa una oración con las palabras girasol y berenjena.', lines:2}]}
   ]
 },
 {
@@ -393,7 +442,19 @@ const SECTIONS = [
       extra:['estropea','iguales','anochecer']},
     {type:'type', title:'Escribe el sinónimo', help:'Escribe un sinónimo. Te damos la primera letra como pista.', cls:'list',
       lines:['rápido → {veloz@v....}','bonito → {hermoso|precioso|lindo@h... / p...}','corto → {breve@b....}','perder → {extraviar@e........}','contento → {alegre|feliz@a.... / f....}','extraño → {raro@r...}']},
-    {type:'open', title:'Piensa sinónimos', help:'Escribe un sinónimo de cada palabra. Tu maestra lo corregirá.',
+    {id:'sin-gr', type:'sort', title:'Familias de sinónimos', help:'¿Con qué palabra tiene un significado parecido? Arrastra cada una a su caja.',
+      buckets:[{id:'b',label:'🌸 bonito',bc:'#ffe0ef'},{id:'g',label:'🐘 grande',bc:'#dbe8ff'},{id:'c',label:'😄 contento',bc:'#fff1c9'}],
+      items:[['precioso','b'],['hermoso','b'],['lindo','b'],['enorme','g'],['gigante','g'],['inmenso','g'],['alegre','c'],['feliz','c'],['satisfecho','c']]},
+    {id:'sin-el', type:'choice', title:'Elige el sinónimo', help:'¿Qué palabra significa lo mismo que la que está en MAYÚSCULAS?',
+      questions:[
+        {q:'El coche es muy VELOZ.', o:['rápido','lento','grande'], a:0},
+        {q:'Mi abuela está CANSADA.', o:['agotada','contenta','despierta'], a:0},
+        {q:'He EXTRAVIADO las llaves.', o:['perdido','encontrado','comprado'], a:0},
+        {q:'La casa es ENORME.', o:['gigante','diminuta','bonita'], a:0},
+        {q:'Ana es muy LISTA.', o:['inteligente','despistada','alta'], a:0},
+        {q:'El perro está ASUSTADO.', o:['con miedo','tranquilo','dormido'], a:0}
+      ]},
+    {id:'sin-3', type:'open', title:'Piensa sinónimos', help:'Escribe un sinónimo de cada palabra. Tu maestra lo corregirá.',
       prompts:[{q:'empezar →'},{q:'cara →'},{q:'mirar →'},{q:'listo →'},{q:'Copia cambiando la palabra destacada por un sinónimo: «Hoy te noto ALEGRE».', lines:2}]}
   ]
 },
@@ -412,8 +473,59 @@ const SECTIONS = [
       items:[['alegre – contento','s'],['corto – breve','s'],['perder – extraviar','s'],['rojo – colorado','s'],['frío – caliente','a'],['grande – pequeño','a'],['secar – mojar','a'],['día – noche','a'],['rápido – veloz','s'],['encender – apagar','a']]},
     {type:'type', title:'Escribe el antónimo', help:'Escribe el contrario. Te damos la primera letra como pista.', cls:'list',
       lines:['día → {noche@n....}','arriba → {abajo@a....}','dentro → {fuera@f....}','rápido → {lento@l....}','encender → {apagar@a.....}','ganar → {perder@p.....}','secar → {mojar@m....}','quitar → {poner@p....}']},
-    {type:'open', title:'Piensa antónimos', help:'Copia las oraciones cambiando las palabras destacadas por sus antónimos. Tu maestra lo corregirá.',
+    {id:'ant-fr', type:'dragblanks', title:'Completa con el contrario', help:'Arrastra el antónimo a cada hueco. ¡Sobran dos!', cls:'list',
+      text:['Mi hermano es alto, pero yo soy [bajo].','El café está caliente y el helado está [frío].','Por la mañana abro la ventana y por la noche la [cierro].','Esta caja está llena y esa está [vacía].','La tortuga es lenta y la liebre es [rápida].','Hoy estoy triste, pero ayer estaba [contento].'],
+      extra:['grande','abierta']},
+    {id:'ant-el', type:'choice', title:'Elige el antónimo', help:'¿Qué palabra significa lo <b>contrario</b> de la que está en MAYÚSCULAS?',
+      questions:[
+        {q:'La sopa está SOSA.', o:['salada','fría','rica'], a:0},
+        {q:'El camino es ANCHO.', o:['estrecho','largo','bonito'], a:0},
+        {q:'El juego es ABURRIDO.', o:['divertido','pesado','largo'], a:0},
+        {q:'La calle está LIMPIA.', o:['sucia','mojada','vacía'], a:0},
+        {q:'Mi perro es JOVEN.', o:['viejo','pequeño','rápido'], a:0},
+        {q:'La habitación está OSCURA.', o:['luminosa','grande','ordenada'], a:0}
+      ]},
+    {id:'ant-3', type:'open', title:'Piensa antónimos', help:'Copia las oraciones cambiando las palabras destacadas por sus antónimos. Tu maestra lo corregirá.',
       prompts:[{q:'Esta sopa está muy SOSA y FRÍA.', lines:2},{q:'Vive en una casa MODERNA y muy LUMINOSA.', lines:2},{q:'Mi bicicleta es PEQUEÑA, pero RÁPIDA.', lines:2}]}
+  ]
+},
+{
+  id:'pol', title:'Palabras polisémicas', emoji:'🐭', color:'#db2777', bg:'#fde2ef',
+  recuerda:[
+    {e:'🔀', t:'¿Qué son?', d:'Las <b>palabras polisémicas</b> son las que tienen <b>varios significados</b>.', x:''},
+    {e:'🍃📄', t:'hoja', d:'La <b>hoja</b> de un árbol y la <b>hoja</b> de papel.', x:''},
+    {e:'🐭🖱️', t:'ratón', d:'El <b>ratón</b> que come queso y el <b>ratón</b> del ordenador.', x:''},
+    {e:'🪑🏦', t:'banco', d:'El <b>banco</b> para sentarse y el <b>banco</b> donde se guarda el dinero.', x:''},
+    {e:'🔎', t:'¿Cómo lo sé?', d:'Para saber qué significa, <b>fíjate en el resto de la oración</b>.', x:'Me senté en el banco del parque → asiento'}
+  ],
+  ex:[
+    {id:'pol-1', type:'choice', title:'¿Qué significa aquí?', help:'Lee la oración y elige el significado de la palabra en MAYÚSCULAS.',
+      questions:[
+        {q:'Me senté en un BANCO del parque.', o:['Asiento para sentarse','Lugar donde se guarda el dinero','Grupo de peces'], a:0},
+        {q:'Vimos un BANCO de peces en el mar.', o:['Grupo de muchos peces','Asiento para sentarse','Lugar donde se guarda el dinero'], a:0},
+        {q:'Se cayó una HOJA del árbol.', o:['Parte verde de las plantas','Trozo de papel','Página de un cuento'], a:0},
+        {q:'El RATÓN del ordenador no funciona.', o:['Aparato para mover la flecha de la pantalla','Animal pequeño','Juguete de peluche'], a:0},
+        {q:'Papá corta la madera con una SIERRA.', o:['Herramienta para cortar','Grupo de montañas','Tipo de pez'], a:0},
+        {q:'Subimos a la SIERRA de excursión.', o:['Grupo de montañas','Herramienta para cortar','Bicicleta de montaña'], a:0},
+        {q:'Me duele la MUÑECA de tanto escribir.', o:['Parte del brazo junto a la mano','Juguete','Pulsera'], a:0}
+      ]},
+    {id:'pol-2', type:'sort', title:'La palabra PLANTA', help:'La palabra <b>planta</b> tiene tres significados. Arrastra cada oración a su caja.',
+      buckets:[{id:'v',label:'🌱 Vegetal',bc:'#d9f6e6'},{id:'p',label:'🏢 Piso de un edificio',bc:'#dbe8ff'},{id:'f',label:'🦶 Parte de abajo del pie',bc:'#ffe2c2'}],
+      items:[['Riego la planta del salón.','v'],['Esta planta tiene flores rojas.','v'],['El cactus es una planta que bebe poca agua.','v'],
+             ['Vivo en la tercera planta.','p'],['El ascensor sube a la quinta planta.','p'],['La juguetería está en la primera planta.','p'],
+             ['Me pica la planta del pie.','f'],['Me clavé una piedra en la planta del pie.','f']]},
+    {id:'pol-3', type:'dragblanks', title:'Una palabra, dos oraciones', help:'¿Qué palabra sirve para las <b>dos</b> oraciones? Arrástrala al hueco. ¡Sobran dos!', cls:'list',
+      text:['«El perro mueve la ___» y «Hay mucha ___ en la caja del súper» → [cola]',
+            '«El ___ come queso» y «Muevo el ___ del ordenador» → [ratón]',
+            '«Escribo una ___ a mi abuela» y «El camarero nos trae la ___» → [carta]',
+            '«El ___ maúlla» y «Papá usa el ___ para cambiar la rueda» → [gato]',
+            '«El pájaro tiene el ___ amarillo» y «Subimos al ___ de la montaña» → [pico]',
+            '«La ___ del árbol es verde» y «Dibujo en una ___ de papel» → [hoja]'],
+      extra:['banco','sierra']},
+    {id:'pol-4', type:'type', title:'Adivina la palabra', help:'Lee las dos pistas y escribe la palabra polisémica.', cls:'list',
+      lines:['🪑🏦 Sirve para sentarse y también guarda tu dinero: {banco@b....}','🐭🖱️ Es un animal y también lo usas con el ordenador: {ratón|raton@r....}','🪚⛰️ Herramienta para cortar madera y también grupo de montañas: {sierra@s.....}','🍃📄 La tienen los árboles y también los cuadernos: {hoja@h...}','🪆✋ Es un juguete y también una parte de tu brazo: {muñeca@m.....}','👅🗣️ Está en tu boca y también es un idioma: {lengua@l.....}']},
+    {id:'pol-5', type:'open', title:'Escribe con palabras polisémicas', help:'Escribe tus oraciones. Tu maestra las corregirá.',
+      prompts:[{q:'Escribe una oración con «hoja» de árbol.'},{q:'Escribe una oración con «hoja» de papel.'},{q:'Escribe dos oraciones con «banco» con significados diferentes.', lines:3},{q:'Busca otra palabra polisémica y explica sus dos significados.', lines:2}]}
   ]
 },
 {
@@ -453,9 +565,8 @@ const SECTIONS = [
         {q:'¿Por qué llaman Queso al conejo?', o:['Porque tiene una mancha amarilla en la oreja','Porque come mucho queso','Porque es blanco'], a:0},
         {q:'¿Qué hicieron los niños con el conejo?', o:['Le hicieron una casita y plantaron zanahorias para él','Lo echaron del huerto','Se lo llevaron a casa'], a:0}
       ]},
-    {type:'sort', title:'Busca en el texto: K y G suave', help:'Estas palabras salen en <i>El huerto del colegio</i>. ¿Tienen sonido K o sonido G suave?', reading:READ_HUERTO, collapsed:true,
-      buckets:[{id:'k',label:'Sonido K 🧀',bc:'#dbe8ff'},{id:'g',label:'Sonido G suave 🐧',bc:'#d4f5f1'}],
-      items:[['Enrique','k'],['quita','k'],['conejo','k'],['casita','k'],['Queso','k'],['cuidar','k'],['Miguel','g'],['amigo','g'],['regadera','g'],['lechugas','g'],['agujero','g']]},
+    {id:'lec-4b', type:'type', title:'Busca en el texto: K y G suave', help:'Estas palabras salen en <i>El huerto del colegio</i>. Escribe <b>c</b>, <b>qu</b>, <b>g</b> o <b>gu</b>.', reading:READ_HUERTO, collapsed:true, cls:'list',
+      lines:['Enri{qu}e · {c}onejo · {qu}ita · {c}asita','{qu}eso · {c}uidar · Mi{gu}el · ami{g}o','re{g}adera · lechu{g}as · a{g}ujero']},
     {type:'open', title:'Opina y escribe', help:'Responde con tus palabras. Tu maestra lo corregirá.',
       prompts:[{q:'En «Un gorro colorado»: ¿crees que a Fortunato le importa más su amigo que el gorro? ¿Por qué?', lines:3},{q:'Escribe con tus palabras la enseñanza de «Todo es valioso».', lines:3},{q:'¿Qué nombre le pondrías tú al conejo del huerto? ¿Por qué?', lines:2}]}
   ]
@@ -541,7 +652,7 @@ function tick(){cx.clearRect(0,0,innerWidth,innerHeight);parts.forEach(p=>{p.vy+
   Object.assign(s.style,{left:Math.random()*100+'%',animationDuration:(16+Math.random()*16)+'s',animationDelay:(-Math.random()*20)+'s',color:pick(['#e63950','#3a86ff','#8f5cf7','#fb8500','#06b6a4'])});b.appendChild(s);}})();
 
 /* ================= mapa ================= */
-const exId=(s,i)=>s.id+'-'+i;
+const exId=(s,i)=>s.ex[i].id||(s.id+'-'+i);
 const isAuto=e=>e.type!=='open';
 function secStars(s){
   const autos=s.ex.map((e,i)=>[e,i]).filter(([e])=>isAuto(e));
@@ -635,11 +746,20 @@ const BUILD={
     a.querySelectorAll('.tin').forEach((inp,k,all)=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();(all[k+1]||inp).focus();}}));
   },
   choice(a,ex){
-    ex.questions.forEach((q,qi)=>{const d=el('div','q',`<p>${qi+1}. ${q.q}</p>`);const os=el('div','opts');const idx=shuffle(q.o.map((_,i)=>i));
+    ex.questions.forEach((q,qi)=>{const d=el('div','q',`<p>${qi+1}. ${q.q}</p>`);const os=el('div','opts');const idx=q.keep?q.o.map((_,i)=>i):shuffle(q.o.map((_,i)=>i));
       d.dataset.choice='1';d.dataset.answer=String(idx.indexOf(q.a));
       idx.forEach((oi,k)=>{const b=el('button','opt',`<span class="l">${'abc'[k]}</span><span>${q.o[oi]}</span>`);b.dataset.k=k;
         b.onclick=()=>{if(b.disabled)return;os.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');d.dataset.sel=k;Sound.pick();};os.appendChild(b);});
       d.appendChild(os);a.appendChild(d);});
+  },
+  letterpick(a,ex){
+    const g=el('div','lpgrid');
+    ex.words.forEach(w=>{const m=w.match(/\{([^}]+)\}/);const ans=m[1];const c=el('div','lpcard');c.dataset.choice='1';c.dataset.answer=String(ex.opts.indexOf(ans));
+      c.appendChild(el('div','word',w.replace(m[0],'<span class="hole">?</span>')));const os=el('div','lopts');const hole=c.querySelector('.hole');
+      ex.opts.forEach((o,k)=>{const b=el('button','opt',o);b.dataset.k=k;b.onclick=()=>{if(b.disabled)return;os.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+        b.classList.add('sel');c.dataset.sel=k;hole.textContent=o;hole.classList.add('on');Sound.pick();};os.appendChild(b);});
+      c.appendChild(os);g.appendChild(c);});
+    a.appendChild(g);
   },
   poem(a,ex){
     const total=ex.stanzas.reduce((s,x)=>s+x.length,0);
@@ -684,7 +804,7 @@ function check(area){
   area.querySelectorAll('.chip[data-req]').forEach(c=>{total++;const z=c.closest('.bucket');if(!z){missing++;c.classList.add('ko');return;}
     const good=z.dataset.accept===c.dataset.val;if(good)ok++;c.classList.add(good?'ok':'ko');});
   area.querySelectorAll('[data-choice]').forEach(q=>{total++;const sel=q.dataset.sel;if(sel==null){missing++;q.classList.add('miss');return;}
-    const btn=q.querySelector(`.opt[data-k="${sel}"]`);const good=sel===q.dataset.answer;if(good)ok++;btn.classList.add(good?'ok':'ko');});
+    const btn=q.querySelector(`.opt[data-k="${sel}"]`);const good=sel===q.dataset.answer;if(good)ok++;btn.classList.add(good?'ok':'ko');q.querySelector('.hole')?.classList.add(good?'ok':'ko');});
   return{ok,total,missing};
 }
 function lock(area){area.querySelectorAll('.chip').forEach(c=>{c.classList.add('locked');c.classList.remove('sel');});area.querySelectorAll('input,.opt').forEach(i=>i.disabled=true);
