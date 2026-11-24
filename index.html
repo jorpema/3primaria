@@ -27,6 +27,8 @@ h1 span{display:inline-block;animation:pop .6s cubic-bezier(.2,.9,.3,1.6) both}
   padding:26px 20px 24px;box-shadow:0 10px 0 var(--ink);transition:transform .2s;animation:pop .6s cubic-bezier(.2,.9,.3,1.4) both;position:relative;overflow:hidden}
 .card:nth-child(2){animation-delay:.12s}
 .card:nth-child(3){animation-delay:.24s}
+.card:nth-child(4){animation-delay:.36s}
+.card:nth-child(5){animation-delay:.48s}
 .card:hover{transform:translateY(-6px) rotate(-1deg)}
 .card:active{transform:translateY(6px);box-shadow:0 3px 0 var(--ink)}
 .card:before{content:"";position:absolute;inset:0 0 auto 0;height:110px;background:var(--c);border-bottom:4px solid var(--ink)}
@@ -61,10 +63,24 @@ h1 span{display:inline-block;animation:pop .6s cubic-bezier(.2,.9,.3,1.6) both}
       <span class="go">Entrar ➜</span>
     </a>
     <a class="card" href="matematiques-taules.html" style="--c:#7c3aed">
-      <div class="icon">✖️</div>
-      <span class="u">Joc</span>
-      <h2>Matemàtiques</h2>
-      <p>Les taules de multiplicar contra rellotge</p>
+      <div class="icon">⏱️</div>
+      <span class="u">Taules de multiplicar</span>
+      <h2>Contra rellotge</h2>
+      <p>Tria el resultat abans que s'acabe el temps</p>
+      <span class="go">Jugar ➜</span>
+    </a>
+    <a class="card" href="matematiques-globus.html" style="--c:#0ea5e9">
+      <div class="icon">🎈</div>
+      <span class="u">Taules de multiplicar</span>
+      <h2>Pluja de globus</h2>
+      <p>Punxa el globus amb el resultat correcte</p>
+      <span class="go">Jugar ➜</span>
+    </a>
+    <a class="card" href="matematiques-memory.html" style="--c:#f97316">
+      <div class="icon">🃏</div>
+      <span class="u">Taules de multiplicar</span>
+      <h2>Memory</h2>
+      <p>Troba les parelles de multiplicació i resultat</p>
       <span class="go">Jugar ➜</span>
     </a>
   </div>
