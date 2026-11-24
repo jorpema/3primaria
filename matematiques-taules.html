@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="ca" translate="no">
 <head>
 <meta charset="UTF-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Les taules de multiplicar · Matemàtiques 3r</title>
 <meta name="description" content="Joc per a practicar les taules de multiplicar: tria les taules i contesta abans que s'acabe el temps.">
@@ -67,6 +68,8 @@ h2{margin:0 0 6px;font-size:26px}
 .lives span{display:inline-block;transition:transform .3s}
 .lives span.lost{filter:grayscale(1);opacity:.3;transform:scale(.7)}
 .lives span.break{animation:heartbreak .7s ease}
+.lives span.gain{animation:heartgain .8s ease}
+@keyframes heartgain{0%{transform:scale(0)}50%{transform:scale(1.8)}100%{transform:scale(1)}}
 @keyframes heartbreak{30%{transform:scale(1.5) rotate(-15deg)}60%{transform:scale(.6) rotate(15deg)}}
 .hits{font-size:22px}
 .hits b{font-size:28px;color:var(--good)}
@@ -157,9 +160,10 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
       <div class="tables" id="tables"></div>
       <div class="quick"><button id="allBtn">✅ Totes</button><button id="noneBtn">✖ Cap</button></div>
       <div class="rules">
-        <div class="rule"><span class="e">⏱️</span><span>Tens <b>5 segons</b> per a triar el resultat.</span></div>
+        <div class="rule"><span class="e">⏱️</span><span>Tens <b>10 segons</b> per a triar el resultat.</span></div>
         <div class="rule"><span class="e">❤️</span><span>Tens <b>3 vides</b>. Si s'acaba el temps o t'equivoques, en perds una.</span></div>
         <div class="rule"><span class="e">⚡</span><span>Cada <b>4 encerts</b> el temps és més curt.</span></div>
+        <div class="rule"><span class="e">💖</span><span>Amb <b>3 encerts seguits</b> recuperes una vida perduda.</span></div>
       </div>
       <div class="center"><button class="btn big" id="startBtn">▶ A jugar!</button></div>
     </div>
@@ -175,7 +179,7 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
       <button class="iconbtn sndbtn" aria-label="So">🔊</button>
     </div>
     <div class="card">
-      <div class="hud"><span class="hits" id="hits">Encerts: <b>0</b></span><span class="timeinfo" id="timeinfo">5 s</span></div>
+      <div class="hud"><span class="hits" id="hits">Encerts: <b>0</b></span><span class="timeinfo" id="timeinfo">10 s</span></div>
       <div class="timer"><i id="bar"></i></div>
       <div class="question" id="question"></div>
       <div class="answers" id="answers"></div>
@@ -192,11 +196,12 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
 
 <script>
 /* ===== Configuració del joc (es pot canviar) ===== */
-const START_TIME = 5;      // segons per a contestar al principi
+const START_TIME = 10;     // segons per a contestar al principi
 const STEP_TIME  = 0.5;    // segons que es lleven cada 4 encerts
 const MIN_TIME   = 1.5;    // temps mínim
 const HITS_PER_LEVEL = 4;  // encerts per a pujar de nivell
 const LIVES = 3;
+const STREAK_LIFE = 3;     // encerts seguits per a recuperar una vida perduda
 const TABLES = [1,2,3,4,5,6,7,8,9,10];
 const COLORS = ['#94a3b8','#3a86ff','#06b6a4','#2fbf71','#84cc16','#f59e0b','#fb8500','#e63950','#db2777','#8f5cf7'];
 
@@ -249,10 +254,10 @@ $('#startBtn').onclick=()=>{Sound.pick();startGame();};
 let G=null, raf=null, nextT=null;
 function timeLimit(){return Math.max(MIN_TIME, START_TIME - STEP_TIME*Math.floor(G.hits/HITS_PER_LEVEL));}
 function startGame(){
-  G={hits:0,lives:LIVES,last:null,mistakes:[],level:1,busy:false};
+  G={hits:0,lives:LIVES,last:null,mistakes:[],level:1,busy:false,streak:0};
   renderLives();updHits(false);$('#level').textContent='⚡ Nivell 1';show('#s-game');setTimeout(newQuestion,350);
 }
-function renderLives(broken){const l=$('#lives');l.innerHTML='';for(let i=0;i<LIVES;i++){const s=el('span',i<G.lives?'':'lost','❤️');if(i===broken)s.classList.add('break');l.appendChild(s);}}
+function renderLives(broken,gained){const l=$('#lives');l.innerHTML='';for(let i=0;i<LIVES;i++){const s=el('span',i<G.lives?'':'lost','❤️');if(i===broken)s.classList.add('break');if(i===gained)s.classList.add('gain');l.appendChild(s);}}
 function updHits(bump){const h=$('#hits');h.innerHTML=`Encerts: <b>${G.hits}</b>`;if(bump){h.classList.remove('bump');void h.offsetWidth;h.classList.add('bump');}}
 function makeOptions(a,b){
   const r=a*b, set=new Set([r]);
@@ -288,20 +293,22 @@ function revealAnswer(cls){const q=$('#question .q');q.textContent=G.a*G.b;q.cla
 function answer(v,btn){
   if(G.busy)return;G.busy=true;cancelAnimationFrame(raf);
   if(v===G.a*G.b){
-    G.hits++;updHits(true);btn.classList.add('ok');revealAnswer('ok');Sound.good();flash('good');
+    G.hits++;G.streak++;updHits(true);btn.classList.add('ok');
+    let gained=false;
+    if(G.streak>=STREAK_LIFE){G.streak=0;if(G.lives<LIVES){G.lives++;gained=true;renderLives(null,G.lives-1);setTimeout(()=>{Sound.level();banner('💖 Vida recuperada!','3 encerts seguits');},200);}}revealAnswer('ok');Sound.good();flash('good');
     $('#msg').textContent=['Molt bé! 🎉','Genial!','Correcte! ⭐','Increïble!','Ets un crac!'][rnd(5)];$('#msg').className='msg good';
     const lvl=1+Math.floor(G.hits/HITS_PER_LEVEL);
     if(lvl>G.level){G.level=lvl;$('#level').textContent='⚡ Nivell '+lvl;
-      setTimeout(()=>{Sound.level();confetti(90);banner(`⚡ Nivell ${lvl}!`, `Ara tens ${fmt(timeLimit())} segons`);},250);
-      nextT=setTimeout(newQuestion,1900);}
-    else nextT=setTimeout(newQuestion,750);
+      setTimeout(()=>{Sound.level();confetti(90);banner(`⚡ Nivell ${lvl}!`, `Ara tens ${fmt(timeLimit())} segons`);},gained?1800:250);
+      nextT=setTimeout(newQuestion,gained?3500:1900);}
+    else nextT=setTimeout(newQuestion,gained?1700:750);
   } else {
     btn.classList.add('ko');loseLife(`Ui! ${G.a} × ${G.b} = ${G.a*G.b}`);
   }
 }
 function timeout(){if(G.busy)return;G.busy=true;$('#bar').style.transform='scaleX(0)';$('#timeinfo').textContent='⏱️ 0.0 s';loseLife(`⏰ Temps! ${G.a} × ${G.b} = ${G.a*G.b}`);}
 function loseLife(text){
-  G.lives--;G.mistakes.push([G.a,G.b]);renderLives(G.lives);revealAnswer('ko');Sound.bad();flash('bad');
+  G.lives--;G.streak=0;G.mistakes.push([G.a,G.b]);renderLives(G.lives);revealAnswer('ko');Sound.bad();flash('bad');
   $('#msg').textContent=text;$('#msg').className='msg bad';
   if(G.lives<=0)nextT=setTimeout(endGame,1600);else nextT=setTimeout(newQuestion,1600);
 }
