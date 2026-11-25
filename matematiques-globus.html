@@ -273,6 +273,7 @@ function newQuestion(){
     const bal={el:d,v,x:lanes[i]*laneW+(Math.random()-.5)*laneW*.3,p:-i*gap/riseTime(),phase:Math.random()*6,alive:true,h:bw*2.4,correct:v===a*b};
     bal.x=Math.max(0,Math.min(W-bw,bal.x));
     d.addEventListener('pointerdown',e=>{e.preventDefault();hit(bal);});
+    d.addEventListener('touchstart',e=>{e.preventDefault();hit(bal);},{passive:false});d.addEventListener('click',()=>hit(bal));
     d.style.transform=`translate(${bal.x}px,${sky.clientHeight+20}px)`;
     sky.appendChild(d);G.balloons.push(bal);
   });

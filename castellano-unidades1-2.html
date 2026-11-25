@@ -942,6 +942,23 @@ function endDrag(e,cancel){
 }
 document.addEventListener('pointerup',e=>endDrag(e,false));
 document.addEventListener('pointercancel',e=>endDrag(e,true));
+/* iPad / Safari: impedir que el navegador faça scroll (i cancel·le l'arrossegament) quan toquem una fitxa */
+document.addEventListener('touchstart',e=>{if(e.target.closest&&e.target.closest('#stage .chip:not(.locked)'))e.preventDefault();},{passive:false});
+document.addEventListener('touchmove',e=>{if(D&&D.moved)e.preventDefault();},{passive:false});
+/* Navegadors sense Pointer Events: convertim els tocs i el ratolí en els mateixos esdeveniments */
+if(!window.PointerEvent){
+  const fake=(e,t)=>({target:t&&t.target||e.target,clientX:t?t.clientX:e.clientX,clientY:t?t.clientY:e.clientY,pointerId:1,button:0,preventDefault:()=>{try{e.preventDefault()}catch(_){}}});
+  const fire=(type,ev)=>document.dispatchEvent(Object.assign(new Event(type),ev));
+  const down=ev=>{const c=ev.target.closest&&ev.target.closest('#stage .chip:not(.locked)');if(!c)return;D={chip:c,x0:ev.clientX,y0:ev.clientY,moved:false,id:1};};
+  document.addEventListener('touchstart',e=>down(fake(e,e.changedTouches[0])),{passive:false});
+  document.addEventListener('mousedown',e=>down(fake(e)));
+  const mv=ev=>{if(!D)return;const pe=new Event('pointermove');Object.defineProperties(pe,{clientX:{value:ev.clientX},clientY:{value:ev.clientY},pointerId:{value:1}});document.dispatchEvent(pe);};
+  document.addEventListener('touchmove',e=>mv(fake(e,e.changedTouches[0])),{passive:false});
+  document.addEventListener('mousemove',e=>mv(fake(e)));
+  document.addEventListener('touchend',e=>endDrag(fake(e,e.changedTouches[0]),false));
+  document.addEventListener('mouseup',e=>endDrag(fake(e),false));
+  document.addEventListener('touchcancel',()=>endDrag(null,true));
+}
 document.addEventListener('click',e=>{if(!selected)return;if(e.target.closest('.chip'))return;const t=e.target.closest('#stage .zone')||e.target.closest('#stage .pool');if(!t)return;
   const c=selected;const st=c.classList.contains('stamp')&&!t.classList.contains('pool');if(!st)selected=null;if(!place(c,t))c.classList.remove('sel');else if(st)c.classList.add('sel');});
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const c=e.target.closest?.('#stage .chip:not(.locked)');
