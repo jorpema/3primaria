@@ -206,6 +206,22 @@ h4.sub{font-size:20px;margin:18px 0 10px}
 .lopts{display:flex;gap:8px;justify-content:center}
 .lopts .opt{padding:6px 16px;font-size:21px;font-weight:700;justify-content:center;min-width:54px}
 .lpcard.miss{border-color:var(--bad)}
+/* arrastrar letras */
+.pool.palette{position:sticky;top:6px;z-index:5;background:#fffdf8;box-shadow:0 4px 0 rgba(43,45,66,.12)}
+.pool.palette .chip{font-size:28px;min-width:66px;padding:6px 14px;font-weight:700;color:var(--mc)}
+.ex.locked .pool.palette{position:static;box-shadow:none}
+.palhelp{margin:0 0 6px!important;font-size:15px!important}
+.lgap{--w:58px;min-width:58px}
+.lgap .chip{font-size:20px;font-weight:700;padding:2px 8px;color:var(--mc)}
+.lines.list .lgap{vertical-align:middle}
+.q.numq .opts{display:flex;flex-wrap:wrap;gap:8px}
+.q.numq .opt{min-width:64px;justify-content:center;font-size:22px;font-weight:700}
+.q.numq .opt .l{display:none}
+.tag.rev{background:#f97316}
+.note.big{font-size:20px;text-align:center;padding:18px}
+.rvtag{position:absolute;margin:-6px 0 0 -2px;font-size:18px}
+.lpcard{position:relative}
+.review-btn{background:linear-gradient(135deg,#ffd29a,#f97316)}
 /* abiertas */
 .open-q{margin-bottom:14px}
 .open-q label{display:block;font-weight:600;font-size:19px;margin-bottom:6px}
@@ -296,6 +312,7 @@ canvas#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:non
       </div>
     </div>
     <div class="missions" id="missions"></div>
+    <button class="teacher-btn review-btn" id="reviewAllBtn"><span class="ic">🎯</span><span>Repasa todos tus fallos<small id="reviewInfo">Las palabras que has fallado</small></span></button>
     <button class="teacher-btn" id="reportBtn"><span class="ic">📝</span><span>Mis respuestas para la profe<small>Lo que has escrito, listo para imprimir</small></span></button>
     <div class="foot">Lengua Castellana 3º · <button class="linkbtn" id="resetBtn">Borrar mi progreso</button></div>
   </section>
@@ -362,14 +379,18 @@ const SECTIONS = [
     {e:'💡', t:'Truco', d:'Mira la vocal que va <b>después</b>: si es <b>e</b> o <b>i</b> → <b>qu</b>. Si es <b>a, o, u</b> → <b>c</b>.', x:'ca · que · qui · co · cu'}
   ],
   ex:[
-    {id:'k-1', type:'type', title:'Escribe c o qu', help:'Escribe en cada hueco <b>c</b> o <b>qu</b>.', cls:'list',
-      lines:['🐌 {c}aracol','🪁 {c}ometa','🧀 {qu}eso','🎾 ra{qu}eta','⛷️ es{qu}íes','🍬 {c}aramelos','🧈 mante{qu}illa','🌲 bos{qu}e','🦟 mos{qu}ito','🏫 {c}olegio']},
-    {id:'k-lp', type:'letterpick', title:'¿C o QU?', help:'Toca la letra que falta en cada palabra. Al final pulsa <b>Corregir</b>.', opts:['c','qu'],
-      words:['🍲 {c}ocido','🧀 {qu}eso','🥄 {c}uchara','📦 pa{qu}ete','1️⃣5️⃣ {qu}ince','🥖 bo{c}adillo','🏙️ es{qu}ina','🐰 {c}onejo','💄 ma{qu}illaje','⛑️ {c}asco']},
-    {id:'k-fr', type:'type', title:'Completa las oraciones', help:'Escribe <b>c</b> o <b>qu</b> en cada hueco.', cls:'list',
-      lines:['En el desayuno como pan con {qu}eso.','Mi abuela prepara un {c}ocido buenísimo.','Vimos un {c}aracol en el par{qu}e.','Tengo {qu}ince {c}aramelos en la bolsa.','Pedro juega con su ra{qu}eta en el {c}olegio.','El mos{qu}ito me ha picado en la {c}ara.']},
-    {id:'k-ad', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¡Cuidado con la <b>c</b> y la <b>qu</b>!', cls:'list',
-      lines:['🧀 Se hace con leche: {queso@q....}','🐌 Lleva su casa a cuestas: {caracol@c......}','🦟 Insecto que pica por la noche: {mosquito@m.......}','🎾 Sirve para jugar al tenis: {raqueta@r......}','🥄 Sirve para comer la sopa: {cuchara@c......}','🌲 Lugar con muchos árboles: {bosque@b.....}','🍲 Plato de garbanzos y verduras: {cocido@c.....}']},
+    {id:'k-lp2', type:'letterpick', title:'¿C o QU?', help:'Toca la letra que falta en cada palabra. Al final pulsa <b>Corregir</b>.', opts:['c','qu'],
+      words:['🍲 {c}ocido','🧀 {qu}eso','🥄 {c}uchara','📦 pa{qu}ete','🔢 {qu}ince','🥖 bo{c}adillo','🏙️ es{qu}ina','🐰 {c}onejo','💄 ma{qu}illaje','⛑️ {c}asco',
+             '🦟 mos{qu}ito','🏠 {c}asa','🐊 {c}ocodrilo','🪣 {c}ubo','🌲 bos{qu}e','🐄 va{c}a','⛵ bar{qu}ito','👕 {c}amiseta']},
+    {id:'k-ld', type:'letterdrag', title:'Arrastra c o qu', help:'Arrastra la letra que falta a cada hueco (o tócala y después toca el hueco).', opts:['c','qu'], cls:'list',
+      lines:['🐌 {c}aracol','🪁 {c}ometa','🎾 ra{qu}eta','⛷️ es{qu}íes','🍬 {c}aramelos','🧈 mante{qu}illa','🏫 {c}olegio','🐭 pe{qu}eño',
+             '🏪 {qu}iosco','🐟 pes{c}ado','⚽ e{qu}ipo','🥥 {c}o{c}o','🏗️ ma{qu}eta']},
+    {id:'k-fs', type:'letterdrag', title:'Completa las oraciones', help:'Arrastra <b>c</b> o <b>qu</b> a cada hueco.', opts:['c','qu'], cls:'list',
+      lines:['En el desayuno como pan con {qu}eso.','Mi abuela prepara un {c}ocido buenísimo.','Vimos un {c}aracol en el par{qu}e.','Tengo {qu}ince {c}aramelos en la bolsa.',
+             'Pedro juega con su ra{qu}eta en el {c}olegio.','El mos{qu}ito me ha picado en la {c}ara.','En el bos{qu}e vive un {c}onejo pe{qu}eño.','Mi e{qu}ipo de fútbol tiene {c}amisetas azules.']},
+    {id:'k-ad2', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¡Cuidado con la <b>c</b> y la <b>qu</b>!', cls:'list',
+      lines:['🧀 Se hace con leche y lo comen los ratones: {queso}','🐌 Lleva su casa a cuestas: {caracol}','🦟 Insecto que pica por la noche: {mosquito}','🎾 Sirve para jugar al tenis: {raqueta}',
+             '🥄 Sirve para comer la sopa: {cuchara}','🌲 Lugar con muchos árboles: {bosque}','🍲 Plato de garbanzos y verduras: {cocido}','🔢 Número que va después del catorce: {quince}']},
     {id:'k-3', type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
       prompts:[{q:'Escribe tres palabras con c (ca, co, cu).', ph:'Ejemplo: ...'},{q:'Escribe tres palabras con qu (que, qui).'},{q:'Inventa una oración con una palabra que lleve qu.', lines:2}]}
   ]
@@ -382,14 +403,17 @@ const SECTIONS = [
     {e:'🐧', t:'GÜ delante de e, i', d:'Se escribe <b>gü</b> (con diéresis) delante de <b>e, i</b> cuando la <b>u sí suena</b>.', x:'pingüino, vergüenza, cigüeña, agüita'}
   ],
   ex:[
-    {id:'g-1', type:'type', title:'Escribe g, gu o gü', help:'Escribe en cada hueco <b>g</b>, <b>gu</b> o <b>gü</b>. ¡No olvides la diéresis (ü) cuando la u suena!', cls:'list',
-      lines:['🔥 ho{gu}era','🍽️ se{gu}idor','🚣 pira{gü}ismo','🐦 jil{gu}ero','🕳️ a{g}ujero','🐧 pin{gü}ino','🎸 {gu}itarra','👧 ami{g}a','😳 ver{gü}enza','☂️ para{g}uas']},
-    {id:'g-lp', type:'letterpick', title:'¿G, GU o GÜ?', help:'Toca lo que falta en cada palabra. Al final pulsa <b>Corregir</b>.', opts:['g','gu','gü'],
-      words:['🍲 {gu}iso','🍝 espa{gu}etis','🍔 hambur{gu}esa','🐧 pin{gü}ino','🐱 {g}ato','🕊️ ci{gü}eña','💧 {g}ota','🚿 man{gu}era','🥤 a{gü}ita','🐛 {g}usano','🧸 ju{gu}ete','🧢 {g}orra']},
-    {id:'g-fr', type:'type', title:'Completa las oraciones', help:'Escribe <b>g</b>, <b>gu</b> o <b>gü</b> en cada hueco.', cls:'list',
-      lines:['Mi abuela hace un {gu}iso de patatas.','Hoy comemos espa{gu}etis con tomate.','Pedimos una hambur{gu}esa con queso.','El pin{gü}ino se tira al a{g}ua.','Toco la {gu}itarra con mi ami{g}a.','La ci{gü}eña vuela muy alto.']},
-    {id:'g-ad', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¡Acuérdate de la diéresis cuando la u suena!', cls:'list',
-      lines:['🐧 Ave que no vuela y vive en el frío: {pingüino@p.......}','🎸 Instrumento con seis cuerdas: {guitarra@g.......}','🍝 Pasta larga y fina: {espaguetis@e.........}','🍔 Carne redonda dentro de un pan: {hamburguesa@h..........}','💧 Cae del grifo o de la lluvia: {gota@g...}','🐛 Animal pequeño que vive en la tierra: {gusano@g.....}','🧸 Sirve para jugar: {juguete@j......}']},
+    {id:'g-lp2', type:'letterpick', title:'¿G, GU o GÜ?', help:'Toca lo que falta en cada palabra. Al final pulsa <b>Corregir</b>.', opts:['g','gu','gü'],
+      words:['🍲 {gu}iso','🍝 espa{gu}etis','🍔 hambur{gu}esa','🐧 pin{gü}ino','🐱 {g}ato','🕊️ ci{gü}eña','💧 {g}ota','🚿 man{gu}era','🥤 a{gü}ita','🐛 {g}usano',
+             '🧸 ju{gu}ete','🧢 {g}orra','🎸 {gu}itarra','😳 ver{gü}enza','🐆 {gu}epardo','🦅 á{g}uila','🥬 lechu{g}a','😉 {gu}iño']},
+    {id:'g-ld', type:'letterdrag', title:'Arrastra g, gu o gü', help:'Arrastra lo que falta a cada hueco. ¡No olvides la diéresis (ü) cuando la u suena!', opts:['g','gu','gü'], cls:'list',
+      lines:['🔥 ho{gu}era','🏃 se{gu}ir','🚣 pira{gü}ismo','🐦 jil{gu}ero','🕳️ a{g}ujero','👧 ami{g}a','☂️ para{g}uas','🌳 hi{gu}era','🗣️ bilin{gü}e','🍬 {g}ominola','🐍 an{gu}ila','🐝 a{gu}ijón']},
+    {id:'g-fs', type:'letterdrag', title:'Completa las oraciones', help:'Arrastra <b>g</b>, <b>gu</b> o <b>gü</b> a cada hueco.', opts:['g','gu','gü'], cls:'list',
+      lines:['Mi abuela hace un {gu}iso de patatas.','Hoy comemos espa{gu}etis con tomate.','Pedimos una hambur{gu}esa con queso.','El pin{gü}ino se tira al a{g}ua.',
+             'Toco la {gu}itarra con mi ami{g}a.','La ci{gü}eña vuela muy alto.','La {g}ata juega con un ju{gu}ete.','El á{g}uila vuela sobre la hi{gu}era.']},
+    {id:'g-ad2', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¡Acuérdate de la diéresis cuando la u suena!', cls:'list',
+      lines:['🐧 Ave que no vuela y vive en el frío: {pingüino}','🎸 Instrumento con seis cuerdas: {guitarra}','🍝 Pasta larga y fina: {espaguetis}','🍔 Carne redonda dentro de un pan: {hamburguesa}',
+             '💧 Cae del grifo o de la lluvia: {gota}','🐛 Animal pequeño que vive en la tierra: {gusano}','🧸 Sirve para jugar: {juguete}','🍲 Comida hecha a fuego lento con carne o patatas: {guiso}']},
     {id:'g-3', type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
       prompts:[{q:'Escribe dos palabras con ga, go o gu.'},{q:'Escribe dos palabras con gue o gui.'},{q:'Escribe dos palabras con güe o güi.'},{q:'Inventa una oración con una palabra que lleve gü.', lines:2}]}
   ]
@@ -404,14 +428,15 @@ const SECTIONS = [
     {e:'⚠️', t:'¡No te líes!', d:'<b>ga, go, gu</b> suenan <b>suave</b> (gato). Para el sonido fuerte con a, o, u siempre <b>j</b>: <b>ja, jo, ju</b>.', x:'gato · jamón'}
   ],
   ex:[
-    {id:'j-1', type:'type', title:'Escribe g o j', help:'Escribe en cada hueco <b>g</b> o <b>j</b>.', cls:'list',
-      lines:['🌿 pere{j}il','🍮 {g}elatina','🧪 breba{j}e','🌻 {g}irasol','🍆 beren{j}ena','🦒 {j}irafa','👥 {g}ente','🍖 {j}amón','👂 ore{j}a','🪄 ma{g}ia','✂️ ti{j}eras','🚗 gara{j}e']},
-    {id:'j-lp', type:'letterpick', title:'¿G o J?', help:'Toca la letra que falta en cada palabra.', opts:['g','j'],
-      words:['⚽ {j}ugar','🤸 {g}imnasia','✈️ via{j}e','💎 {j}oya','😎 {g}enial','🔴 ro{j}o','👔 {j}efe','🧼 {j}abón','🏫 cole{g}io','🥦 ve{g}etal']},
-    {id:'j-fr', type:'type', title:'Completa las oraciones', help:'Escribe <b>g</b> o <b>j</b> en cada hueco.', cls:'list',
-      lines:['En el huerto hay {g}irasoles y beren{j}enas.','El cocinero pone pere{j}il en la sopa.','De postre tenemos {g}elatina de fresa.','La bru{j}a prepara un breba{j}e mágico.','La {j}irafa es el animal más alto.','Mucha {g}ente via{j}a en tren.']},
-    {id:'j-ad', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¿Va con <b>g</b> o con <b>j</b>?', cls:'list',
-      lines:['🌻 Flor grande y amarilla que mira al sol: {girasol@g......}','🍆 Hortaliza de color morado: {berenjena@b........}','🦒 Animal con el cuello muy largo: {jirafa@j.....}','🍮 Postre que tiembla: {gelatina@g.......}','🌿 Hierba verde para dar sabor a la comida: {perejil@p......}','✂️ Sirven para cortar papel: {tijeras@t......}','🧼 Lo usamos para lavarnos las manos: {jabón|jabon@j....}']},
+    {id:'j-ld', type:'letterdrag', title:'Arrastra g o j', help:'Arrastra la letra que falta a cada hueco.', opts:['g','j'], cls:'list',
+      lines:['🌿 pere{j}il','🍮 {g}elatina','🧪 breba{j}e','🌻 {g}irasol','🍆 beren{j}ena','🦒 {j}irafa','👥 {g}ente','🍖 {j}amón','👂 ore{j}a','🪄 ma{g}ia',
+             '✂️ ti{j}eras','🚗 gara{j}e','🧄 a{j}o','🍊 naran{j}a','🧌 {g}igante']},
+    {id:'j-lp2', type:'letterpick', title:'¿G o J?', help:'Toca la letra que falta en cada palabra.', opts:['g','j'],
+      words:['⚽ {j}ugar','🤸 {g}imnasia','✈️ via{j}e','💎 {j}oya','😎 {g}enial','🔴 ro{j}o','👔 {j}efe','🧼 {j}abón','🏫 cole{g}io','🥦 ve{g}etal',
+             '🔄 {g}irar','💦 mo{j}ado','🐦 pá{j}aro','🎖️ {g}eneral','🧥 {j}ersey','🦁 salva{j}e']},
+    {id:'j-fs', type:'letterdrag', title:'Completa las oraciones', help:'Arrastra <b>g</b> o <b>j</b> a cada hueco.', opts:['g','j'], cls:'list',
+      lines:['En el huerto hay {g}irasoles y beren{j}enas.','El cocinero pone pere{j}il en la sopa.','De postre tenemos {g}elatina de fresa.','La bru{j}a prepara un breba{j}e mágico.',
+             'La {j}irafa es el animal más alto.','Mucha {g}ente via{j}a en tren.','El {g}igante come naran{j}as.','Mi abuelo cultiva a{j}os y pere{j}il.']},
     {id:'j-so', type:'choice', title:'¿Cómo suena la G?', help:'Lee la palabra en voz alta. ¿La <b>g</b> suena suave o fuerte?',
       questions:[
         {q:'GATO', o:['Suave, como en guiso','Fuerte, como en jamón'], a:0, keep:true},
@@ -423,6 +448,9 @@ const SECTIONS = [
         {q:'ESPAGUETIS', o:['Suave, como en guiso','Fuerte, como en jamón'], a:0, keep:true},
         {q:'MAGIA', o:['Suave, como en guiso','Fuerte, como en jamón'], a:1, keep:true}
       ]},
+    {id:'j-ad2', type:'type', title:'Adivina y escribe', help:'Lee la pista y escribe la palabra entera. ¿Va con <b>g</b> o con <b>j</b>?', cls:'list',
+      lines:['🌻 Flor grande y amarilla que mira al sol: {girasol}','🍆 Hortaliza de color morado: {berenjena}','🦒 Animal con el cuello muy largo: {jirafa}','🍮 Postre que tiembla: {gelatina}',
+             '🌿 Hierba verde para dar sabor a la comida: {perejil}','✂️ Sirven para cortar papel: {tijeras}','🧼 Lo usamos para lavarnos las manos: {jabón|jabon}','🧪 Bebida mágica que preparan las brujas: {brebaje}']},
     {id:'j-op', type:'open', title:'Ahora piensa tú', help:'Escribe tus respuestas. Tu maestra las corregirá.',
       prompts:[{q:'Escribe dos palabras con ge o gi.'},{q:'Escribe dos palabras con je o ji.'},{q:'Escribe dos palabras con ja, jo o ju.'},{q:'Inventa una oración con las palabras girasol y berenjena.', lines:2}]}
   ]
@@ -435,13 +463,11 @@ const SECTIONS = [
     {e:'🧩', t:'Más ejemplos', d:'breve – corto · veloz – rápido · raro – extraño · alegre – contento', x:''}
   ],
   ex:[
-    {type:'match', title:'Forma parejas de sinónimos', help:'Arrastra a cada palabra su sinónimo y pulsa <b>Corregir</b>.',
+    {type:'match', title:'Forma parejas de sinónimos', help:'Arrastra a cada palabra su sinónimo y pulsa <b>Corregir</b>.', rvq:'¿Cuál es el sinónimo de «%»?',
       pairs:[['breve','corto'],['veloz','rápido'],['raro','extraño'],['colorado','rojo'],['olfatear','oler'],['extraviar','perder'],['alegre','contento'],['arroyo','riachuelo']]},
     {type:'dragblanks', title:'Cambia por un sinónimo', help:'Arrastra a cada hueco el sinónimo de la palabra destacada.', cls:'list',
       text:['El perro <b>olfatea</b> las flores. → El perro [huele] las flores.','Tengo bolígrafos <b>diferentes</b>. → Tengo bolígrafos [distintos].','Era un gorro <b>de primera</b>. → Era un gorro [excelente].','Kavita salía al <b>alba</b>. → Kavita salía al [amanecer].','El silencio era <b>apacible</b>. → El silencio era [tranquilo].'],
       extra:['estropea','iguales','anochecer']},
-    {type:'type', title:'Escribe el sinónimo', help:'Escribe un sinónimo. Te damos la primera letra como pista.', cls:'list',
-      lines:['rápido → {veloz@v....}','bonito → {hermoso|precioso|lindo@h... / p...}','corto → {breve@b....}','perder → {extraviar@e........}','contento → {alegre|feliz@a.... / f....}','extraño → {raro@r...}']},
     {id:'sin-gr', type:'sort', title:'Familias de sinónimos', help:'¿Con qué palabra tiene un significado parecido? Arrastra cada una a su caja.',
       buckets:[{id:'b',label:'🌸 bonito',bc:'#ffe0ef'},{id:'g',label:'🐘 grande',bc:'#dbe8ff'},{id:'c',label:'😄 contento',bc:'#fff1c9'}],
       items:[['precioso','b'],['hermoso','b'],['lindo','b'],['enorme','g'],['gigante','g'],['inmenso','g'],['alegre','c'],['feliz','c'],['satisfecho','c']]},
@@ -454,6 +480,8 @@ const SECTIONS = [
         {q:'Ana es muy LISTA.', o:['inteligente','despistada','alta'], a:0},
         {q:'El perro está ASUSTADO.', o:['con miedo','tranquilo','dormido'], a:0}
       ]},
+    {id:'sin-ty', type:'type', title:'Escribe el sinónimo', help:'Escribe un sinónimo de cada palabra.', cls:'list',
+      lines:['rápido → {veloz|ligero|raudo}','bonito → {hermoso|precioso|lindo|guapo}','corto → {breve}','perder → {extraviar}','contento → {alegre|feliz|satisfecho}','extraño → {raro}','colorado → {rojo}','oler → {olfatear}']},
     {id:'sin-3', type:'open', title:'Piensa sinónimos', help:'Escribe un sinónimo de cada palabra. Tu maestra lo corregirá.',
       prompts:[{q:'empezar →'},{q:'cara →'},{q:'mirar →'},{q:'listo →'},{q:'Copia cambiando la palabra destacada por un sinónimo: «Hoy te noto ALEGRE».', lines:2}]}
   ]
@@ -466,13 +494,11 @@ const SECTIONS = [
     {e:'🤔', t:'¡No te líes!', d:'<b>Sinónimos</b> = significan <b>casi lo mismo</b>.<br><b>Antónimos</b> = significan <b>lo contrario</b>.', x:''}
   ],
   ex:[
-    {type:'match', title:'Forma parejas de antónimos', help:'Arrastra a cada palabra su antónimo y pulsa <b>Corregir</b>.',
+    {type:'match', title:'Forma parejas de antónimos', help:'Arrastra a cada palabra su antónimo y pulsa <b>Corregir</b>.', rvq:'¿Cuál es el antónimo de «%»?',
       pairs:[['llena','vacía'],['viejo','nuevo'],['aburrido','divertido'],['ancho','estrecho'],['abrir','cerrar'],['subir','bajar'],['meter','sacar'],['comprar','vender']]},
     {type:'sort', title:'¿Sinónimos o antónimos?', help:'Arrastra cada pareja a su caja.',
       buckets:[{id:'s',label:'👯 Sinónimos',bc:'#d9f6e6'},{id:'a',label:'☀️🌙 Antónimos',bc:'#ffe2c2'}],
       items:[['alegre – contento','s'],['corto – breve','s'],['perder – extraviar','s'],['rojo – colorado','s'],['frío – caliente','a'],['grande – pequeño','a'],['secar – mojar','a'],['día – noche','a'],['rápido – veloz','s'],['encender – apagar','a']]},
-    {type:'type', title:'Escribe el antónimo', help:'Escribe el contrario. Te damos la primera letra como pista.', cls:'list',
-      lines:['día → {noche@n....}','arriba → {abajo@a....}','dentro → {fuera@f....}','rápido → {lento@l....}','encender → {apagar@a.....}','ganar → {perder@p.....}','secar → {mojar@m....}','quitar → {poner@p....}']},
     {id:'ant-fr', type:'dragblanks', title:'Completa con el contrario', help:'Arrastra el antónimo a cada hueco. ¡Sobran dos!', cls:'list',
       text:['Mi hermano es alto, pero yo soy [bajo].','El café está caliente y el helado está [frío].','Por la mañana abro la ventana y por la noche la [cierro].','Esta caja está llena y esa está [vacía].','La tortuga es lenta y la liebre es [rápida].','Hoy estoy triste, pero ayer estaba [contento].'],
       extra:['grande','abierta']},
@@ -485,6 +511,8 @@ const SECTIONS = [
         {q:'Mi perro es JOVEN.', o:['viejo','pequeño','rápido'], a:0},
         {q:'La habitación está OSCURA.', o:['luminosa','grande','ordenada'], a:0}
       ]},
+    {id:'ant-ty', type:'type', title:'Escribe el antónimo', help:'Escribe el contrario de cada palabra.', cls:'list',
+      lines:['día → {noche}','arriba → {abajo}','dentro → {fuera}','rápido → {lento}','encender → {apagar}','ganar → {perder}','secar → {mojar}','quitar → {poner}','alto → {bajo}','abrir → {cerrar}']},
     {id:'ant-3', type:'open', title:'Piensa antónimos', help:'Copia las oraciones cambiando las palabras destacadas por sus antónimos. Tu maestra lo corregirá.',
       prompts:[{q:'Esta sopa está muy SOSA y FRÍA.', lines:2},{q:'Vive en una casa MODERNA y muy LUMINOSA.', lines:2},{q:'Mi bicicleta es PEQUEÑA, pero RÁPIDA.', lines:2}]}
   ]
@@ -522,8 +550,8 @@ const SECTIONS = [
             '«El pájaro tiene el ___ amarillo» y «Subimos al ___ de la montaña» → [pico]',
             '«La ___ del árbol es verde» y «Dibujo en una ___ de papel» → [hoja]'],
       extra:['banco','sierra']},
-    {id:'pol-4', type:'type', title:'Adivina la palabra', help:'Lee las dos pistas y escribe la palabra polisémica.', cls:'list',
-      lines:['🪑🏦 Sirve para sentarse y también guarda tu dinero: {banco@b....}','🐭🖱️ Es un animal y también lo usas con el ordenador: {ratón|raton@r....}','🪚⛰️ Herramienta para cortar madera y también grupo de montañas: {sierra@s.....}','🍃📄 La tienen los árboles y también los cuadernos: {hoja@h...}','🪆✋ Es un juguete y también una parte de tu brazo: {muñeca@m.....}','👅🗣️ Está en tu boca y también es un idioma: {lengua@l.....}']},
+    {id:'pol-4b', type:'type', title:'Adivina la palabra', help:'Lee las dos pistas y escribe la palabra polisémica.', cls:'list',
+      lines:['🪑🏦 Sirve para sentarse y también guarda tu dinero: {banco}','🐭🖱️ Es un animal y también lo usas con el ordenador: {ratón|raton}','🪚⛰️ Herramienta para cortar madera y también grupo de montañas: {sierra}','🍃📄 La tienen los árboles y también los cuadernos: {hoja}','🪆✋ Es un juguete y también una parte de tu brazo: {muñeca}','👅🗣️ Está en tu boca y también es un idioma: {lengua}','🐱🔧 Es un animal que maúlla y también sirve para levantar el coche: {gato}']},
     {id:'pol-5', type:'open', title:'Escribe con palabras polisémicas', help:'Escribe tus oraciones. Tu maestra las corregirá.',
       prompts:[{q:'Escribe una oración con «hoja» de árbol.'},{q:'Escribe una oración con «hoja» de papel.'},{q:'Escribe dos oraciones con «banco» con significados diferentes.', lines:3},{q:'Busca otra palabra polisémica y explica sus dos significados.', lines:2}]}
   ]
@@ -565,8 +593,8 @@ const SECTIONS = [
         {q:'¿Por qué llaman Queso al conejo?', o:['Porque tiene una mancha amarilla en la oreja','Porque come mucho queso','Porque es blanco'], a:0},
         {q:'¿Qué hicieron los niños con el conejo?', o:['Le hicieron una casita y plantaron zanahorias para él','Lo echaron del huerto','Se lo llevaron a casa'], a:0}
       ]},
-    {id:'lec-4b', type:'type', title:'Busca en el texto: K y G suave', help:'Estas palabras salen en <i>El huerto del colegio</i>. Escribe <b>c</b>, <b>qu</b>, <b>g</b> o <b>gu</b>.', reading:READ_HUERTO, collapsed:true, cls:'list',
-      lines:['Enri{qu}e · {c}onejo · {qu}ita · {c}asita','{qu}eso · {c}uidar · Mi{gu}el · ami{g}o','re{g}adera · lechu{g}as · a{g}ujero']},
+    {id:'lec-ld', type:'letterdrag', title:'Busca en el texto: K y G suave', help:'Estas palabras salen en <i>El huerto del colegio</i>. Arrastra <b>c</b>, <b>qu</b>, <b>g</b> o <b>gu</b>.', reading:READ_HUERTO, collapsed:true, opts:['c','qu','g','gu'], cls:'list',
+      lines:['Enri{qu}e','{c}onejo','{qu}ita','{c}asita','{qu}eso','{c}uidar','Mi{gu}el','ami{g}o','re{g}adera','lechu{g}as','a{g}ujero','pe{qu}eño']},
     {type:'open', title:'Opina y escribe', help:'Responde con tus palabras. Tu maestra lo corregirá.',
       prompts:[{q:'En «Un gorro colorado»: ¿crees que a Fortunato le importa más su amigo que el gorro? ¿Por qué?', lines:3},{q:'Escribe con tus palabras la enseñanza de «Todo es valioso».', lines:3},{q:'¿Qué nombre le pondrías tú al conejo del huerto? ¿Por qué?', lines:2}]}
   ]
@@ -583,12 +611,12 @@ const SECTIONS = [
     {type:'dragblanks', title:'¿Qué sabes del poema?', help:'Arrastra cada palabra a su hueco. ¡Sobran dos!',
       text:['Un poema es un texto en el que el autor expresa sus [emociones], sentimientos o pensamientos.','Los poemas se escriben en [verso].','Cada línea de un poema es un [verso].','Un conjunto de versos es una [estrofa].','Los versos [riman] cuando terminan en palabras que suenan igual.'],
       extra:['párrafo','dibujos']},
-    {type:'poem', title:'Analiza el poema', help:'Lee el poema y contesta. Después une cada palabra con la que rima.',
+    {type:'poem', rvq:'¿Qué palabra rima con «%»?', title:'Analiza el poema', help:'Lee el poema y contesta. Después une cada palabra con la que rima.',
       poemTitle:'El gato Simón', stanzas:[
         ['En el tejado vive Simón,','un gato gris y dormilón.','Por las mañanas sale a pasear','y en cada esquina se para a jugar.'],
         ['Por la noche mira la luna,','redonda y blanca como ninguna.','Después se duerme en su cojín','soñando con flores del jardín.']],
       rhymes:[['Simón','dormilón'],['pasear','jugar'],['luna','ninguna'],['cojín','jardín']]},
-    {type:'poem', title:'Analiza otro poema', help:'Cuenta bien: ¡este poema tiene más estrofas!',
+    {type:'poem', rvq:'¿Qué palabra rima con «%»?', title:'Analiza otro poema', help:'Cuenta bien: ¡este poema tiene más estrofas!',
       poemTitle:'La lluvia', stanzas:[
         ['Cae la lluvia sin parar','y los niños salen a saltar.'],
         ['Las gotas cantan en el cristal','una canción muy especial.'],
@@ -609,7 +637,7 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const norm=s=>String(s).normalize('NFC').trim().toLowerCase().replace(/\s+/g,' ').replace(/[.!¡?¿,]+$/,'');
 const KEY='lengua3-u12';
 const store={get(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}},set(v){try{localStorage.setItem(KEY,JSON.stringify(v))}catch(e){}}};
-let P=store.get(); P.best=P.best||{}; P.open=P.open||{}; if(P.sound===undefined)P.sound=true;
+let P=store.get(); P.best=P.best||{}; P.open=P.open||{}; P.miss=P.miss||{}; if(P.sound===undefined)P.sound=true;
 const save=()=>store.set(P);
 
 /* ================= sonido ================= */
@@ -651,15 +679,23 @@ function tick(){cx.clearRect(0,0,innerWidth,innerHeight);parts.forEach(p=>{p.vy+
 (()=>{const b=$('#bubbles');const em=['A','b','✏️','📚','?','!','ñ','Q','G','K','¿'];for(let i=0;i<14;i++){const s=el('span',null,pick(em));
   Object.assign(s.style,{left:Math.random()*100+'%',animationDuration:(16+Math.random()*16)+'s',animationDelay:(-Math.random()*20)+'s',color:pick(['#e63950','#3a86ff','#8f5cf7','#fb8500','#06b6a4'])});b.appendChild(s);}})();
 
+/* ===== repaso de fallos: al final de cada tema ===== */
+SECTIONS.forEach(s=>s.ex.push({id:s.id+'-rev',type:'review',title:'Repasa tus fallos',help:'Aquí salen las palabras que has fallado en los ejercicios de este tema. ¡Corrígelas!'}));
+const REVIEW_ALL={id:'all',title:'Repaso de todos tus fallos',emoji:'🎯',color:'#f97316',bg:'#ffe8d1',
+  recuerda:[{e:'🎯',t:'Tus fallos',d:'Aquí se juntan las palabras que has fallado en <b>todos los temas</b>.',x:''},
+            {e:'✅',t:'Cómo funciona',d:'Cuando aciertes una palabra, <b>desaparece</b> de la lista. ¡Intenta dejarla vacía!',x:''}],
+  ex:[{id:'all-rev',type:'review',all:true,title:'Todos tus fallos',help:'Corrige las palabras que has fallado en todos los temas.'}]};
+const missCount=sec=>Object.values(P.miss).filter(v=>!sec||v.sec===sec).length;
+
 /* ================= mapa ================= */
 const exId=(s,i)=>s.ex[i].id||(s.id+'-'+i);
-const isAuto=e=>e.type!=='open';
+const isAuto=e=>e.type!=='open'&&e.type!=='review';
 function secStars(s){
   const autos=s.ex.map((e,i)=>[e,i]).filter(([e])=>isAuto(e));
   const avg=autos.reduce((a,[e,i])=>a+(P.best[exId(s,i)]||0),0)/autos.length;
   return avg>=.9?3:avg>=.7?2:avg>=.4?1:0;
 }
-function secDone(s){return s.ex.every((e,i)=>isAuto(e)?P.best[exId(s,i)]!=null:openFilled(s,i));}
+function secDone(s){return s.ex.every((e,i)=>e.type==='review'||(isAuto(e)?P.best[exId(s,i)]!=null:openFilled(s,i)));}
 function openFilled(s,i){return s.ex[i].prompts.every((_,k)=>(P.open[exId(s,i)+'-'+k]||'').trim());}
 const starStr=n=>[0,1,2].map(i=>`<span class="${i<n?'on':''}">★</span>`).join('');
 function renderMap(){
@@ -668,6 +704,7 @@ function renderMap(){
     const b=el('button','mission-btn');b.style.animationDelay=(i*.07)+'s';
     b.innerHTML=`<div class="disc" style="--col:${s.color};--d:${i*.4}s"><span class="num">${i+1}</span>${s.emoji}${d?'<span class="done-mark">✔</span>':''}</div><div class="name">${s.title}</div><div class="stars">${starStr(st)}</div>`;
     b.onclick=()=>{Sound.pick();openSec(i);};w.appendChild(b);});
+  const mc=missCount();$('#reviewInfo').textContent=mc?`Tienes ${mc} ${mc===1?'palabra':'palabras'} para repasar`:'¡No tienes fallos pendientes! 🎉';
   $('#totalStars').textContent=tot;$('#maxStars').textContent=SECTIONS.length*3;
   $('#heroSpeech').innerHTML=done===0?'¡Hola! Soy <b>Leo</b> 📖. Elige un tema, haz los ejercicios y pulsa <b>Corregir</b> al final. Si fallas algo, ¡repítelo para mejorar!'
     :done<SECTIONS.length?`¡Ya has terminado <b>${done} de ${SECTIONS.length}</b> temas! Sigue así 💪`:'¡Has terminado todos los temas! 🎉 Repite los que tengan menos estrellas y enseña <b>tus respuestas</b> a la profe.';
@@ -675,19 +712,22 @@ function renderMap(){
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const s=$(id);void s.offsetWidth;s.classList.add('active');scrollTo({top:0});
   $('#buddy').style.display=id==='#screen-sec'?'flex':'none';}
 $('#backBtn').onclick=$('#backBtn2').onclick=()=>{Sound.pick();renderMap();show('#screen-map');};
-$('#resetBtn').onclick=()=>{if(confirm('¿Seguro que quieres borrar todo tu progreso y tus respuestas?')){P.best={};P.open={};save();renderMap();}};
+$('#resetBtn').onclick=()=>{if(confirm('¿Seguro que quieres borrar todo tu progreso y tus respuestas?')){P.best={};P.open={};P.miss={};save();renderMap();}};
 $('#reportBtn').onclick=()=>{Sound.pick();renderReport();show('#screen-report');};
+$('#reviewAllBtn').onclick=()=>{Sound.pick();openSecObj(REVIEW_ALL);};
 
 /* ================= sección ================= */
 let S=null,step=0;
-function openSec(i){S=SECTIONS[i];step=0;document.documentElement.style.setProperty('--mc',S.color);document.documentElement.style.setProperty('--bg2',S.bg);
+function openSec(i){openSecObj(SECTIONS[i]);}
+function openSecObj(sec){S=sec;step=0;document.documentElement.style.setProperty('--mc',S.color);document.documentElement.style.setProperty('--bg2',S.bg);
   $('#sEmoji').textContent=S.emoji;$('#sTitle').textContent=S.title;show('#screen-sec');renderStep();setTimeout(()=>say('¡Vamos allá! 🚀','jump'),400);}
 function renderTabs(){
   const t=$('#tabs');t.innerHTML='';
   const mk=(label,i,mark)=>{const b=el('button','tab'+(i===step?' cur':''),label+(mark?`<span class="mk">${mark}</span>`:''));b.onclick=()=>{step=i;Sound.pick();renderStep();};t.appendChild(b);};
   mk('📚 Recuerda',0);
-  S.ex.forEach((e,i)=>{let m='';if(isAuto(e)){const b=P.best[exId(S,i)];if(b!=null)m=b>=1?'⭐':b>=.7?'🙂':'🔁';}else if(openFilled(S,i))m='✏️';
-    mk(e.type==='open'?`✍️ ${i+1}`:String(i+1),i+1,m);});
+  S.ex.forEach((e,i)=>{let m='';if(isAuto(e)){const b=P.best[exId(S,i)];if(b!=null)m=b>=1?'⭐':b>=.7?'🙂':'🔁';}else if(e.type==='open'){if(openFilled(S,i))m='✏️';}
+    else{const n=missCount(e.all?null:S.id);m=n?String(n):'✔';}
+    mk(e.type==='open'?`✍️ ${i+1}`:e.type==='review'?'🎯 Fallos':String(i+1),i+1,m);});
 }
 function renderStep(){
   renderTabs();const st=$('#stage');st.innerHTML='';const box=el('div','enter');st.appendChild(box);
@@ -707,15 +747,54 @@ function renderRecuerda(box){
 /* ================= ejercicios ================= */
 function renderExercise(box,ex,id){
   const n=S.ex.indexOf(ex)+1;
-  box.appendChild(el('h2','act-h',`<span class="tag ${ex.type==='open'?'open':''}">${ex.type==='open'?'✍️ Para la profe':'Ejercicio '+n}</span> ${ex.title}`));
+  box.appendChild(el('h2','act-h',`<span class="tag ${ex.type==='open'?'open':ex.type==='review'?'rev':''}">${ex.type==='open'?'✍️ Para la profe':ex.type==='review'?'🎯 Repaso':'Ejercicio '+n}</span> ${ex.title}`));
   if(ex.help)box.appendChild(el('p','help','👉 '+ex.help));
   if(ex.reading){const r=el('div','reading');r.innerHTML=ex.collapsed?`<details><summary>📖 Ver el texto otra vez</summary>${ex.reading}</details>`:ex.reading;box.appendChild(r);}
   const area=el('div','ex');box.appendChild(area);
   BUILD[ex.type](area,ex,id);
-  if(isAuto(ex))addCheckBar(box,area,ex,id);
+  if(isAuto(ex))annotate(area,ex,id);
+  if(isAuto(ex)||(ex.type==='review'&&!area.dataset.empty))addCheckBar(box,area,ex,id);
 }
 function makeChip(t,v){const c=el('button','chip',t);c.type='button';c.dataset.val=norm(v);return c;}
 function makePool(chips){const p=el('div','pool');shuffle(chips).forEach(c=>p.appendChild(c));return p;}
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function lpCard(w,opts){
+  const m=w.match(/\{([^}]+)\}/);const ans=m[1];const c=el('div','lpcard');c.dataset.choice='1';c.dataset.answer=String(opts.indexOf(ans));c.dataset.w=w;
+  c.appendChild(el('div','word',w.replace(m[0],'<span class="hole">?</span>')));const os=el('div','lopts');const hole=c.querySelector('.hole');
+  opts.forEach((o,k)=>{const b=el('button','opt',o);b.dataset.k=k;b.onclick=()=>{if(b.disabled)return;os.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel');c.dataset.sel=k;hole.textContent=o;hole.classList.add('on');Sound.pick();};os.appendChild(b);});
+  c.appendChild(os);return c;
+}
+function choiceQ(q,num){
+  const d=el('div','q',`<p>${num?num+'. ':''}${q.q}</p>`);const os=el('div','opts');const idx=q.keep?q.o.map((_,i)=>i):shuffle(q.o.map((_,i)=>i));
+  d.dataset.choice='1';d.dataset.answer=String(idx.indexOf(q.a));
+  idx.forEach((oi,k)=>{const b=el('button','opt',`<span class="l">${'abcde'[k]}</span><span>${q.o[oi]}</span>`);b.dataset.k=k;
+    b.onclick=()=>{if(b.disabled)return;os.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');d.dataset.sel=k;Sound.pick();};os.appendChild(b);});
+  d.appendChild(os);return d;
+}
+// Prepara cada elemento corregible para poder guardar el fallo y repasarlo después
+function lineWith(p,target,mode){ // mode 'pick' → {ans} en el hueco; 'blank' → ___
+  const c=p.cloneNode(true);const src=[...p.querySelectorAll('.zone,.tin')],dst=[...c.querySelectorAll('.zone,.tin')];
+  src.forEach((z,i)=>{const ans=(z.dataset.accept||z.dataset.answers||'').split('|')[0];dst[i].replaceWith(document.createTextNode(z===target?(mode==='pick'?`{${ans}}`:'___'):ans));});
+  return c.textContent.replace(/\s+/g,' ').trim();
+}
+function annotate(area,ex,id){
+  if(ex.reading&&ex.type==='choice')return;
+  let n=0;const sec=S.id;const tag=(e,rv)=>{e.dataset.mkey=id+':'+(n++);e.dataset.rv=JSON.stringify({...rv,sec});};
+  const strip=h=>{const t=document.createElement('div');t.innerHTML=h;return t.textContent;};
+  if(ex.type==='letterpick')area.querySelectorAll('.lpcard').forEach(c=>tag(c,{k:'pick',w:c.dataset.w,opts:ex.opts}));
+  if(ex.type==='letterdrag')area.querySelectorAll('.lgap').forEach(g=>tag(g,{k:'pick',w:lineWith(g.closest('p'),g,'pick'),opts:ex.opts}));
+  if(ex.type==='type')area.querySelectorAll('.tin[data-answers]').forEach(i=>tag(i,{k:'type',q:lineWith(i.closest('p'),i,'blank').replace(/\s*___\s*$/,''),a:i.dataset.answers}));
+  if(ex.type==='dragblanks'){const words=[...area.querySelectorAll('.pool .chip')].map(c=>c.textContent);
+    area.querySelectorAll('.gap').forEach(g=>{const ans=g.dataset.accept;const others=shuffle(words.filter(w=>w!==ans)).slice(0,2);
+      tag(g,{k:'choice',q:lineWith(g.closest('p'),g,'blank'),o:[ans,...others],a:0});});}
+  if(ex.type==='sort'){const labels=ex.buckets.map(b=>strip(b.label));
+    area.querySelectorAll('.chip[data-req]').forEach(c=>tag(c,{k:'choice',q:`¿Dónde va «${c.textContent}»?`,o:labels,a:ex.buckets.findIndex(b=>b.id===c.dataset.val),keep:true}));}
+  if(ex.type==='match'||ex.type==='poem'){const rights=[...area.querySelectorAll('.pair .slot')].map(s=>s.dataset.accept);
+    area.querySelectorAll('.pair').forEach(p=>{const s=p.querySelector('.slot');const l=p.querySelector('.w').textContent;const ans=s.dataset.accept;
+      tag(s,{k:'choice',q:(ex.rvq||'«%» ➜ ?').replace('%',l),o:[ans,...shuffle(rights.filter(r=>r!==ans)).slice(0,2)],a:0});});}
+  if(ex.type==='choice')area.querySelectorAll('.q[data-choice]').forEach((d,i)=>{const q=ex.questions[i];tag(d,{k:'choice',q:q.q,o:q.o,a:q.a,keep:!!q.keep});});
+}
 const BUILD={
   sort(a,ex){
     a.appendChild(makePool(ex.items.map(([t,b])=>{const c=makeChip(t,b);c.dataset.req='1';return c;})));
@@ -746,26 +825,37 @@ const BUILD={
     a.querySelectorAll('.tin').forEach((inp,k,all)=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();(all[k+1]||inp).focus();}}));
   },
   choice(a,ex){
-    ex.questions.forEach((q,qi)=>{const d=el('div','q',`<p>${qi+1}. ${q.q}</p>`);const os=el('div','opts');const idx=q.keep?q.o.map((_,i)=>i):shuffle(q.o.map((_,i)=>i));
-      d.dataset.choice='1';d.dataset.answer=String(idx.indexOf(q.a));
-      idx.forEach((oi,k)=>{const b=el('button','opt',`<span class="l">${'abc'[k]}</span><span>${q.o[oi]}</span>`);b.dataset.k=k;
-        b.onclick=()=>{if(b.disabled)return;os.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');d.dataset.sel=k;Sound.pick();};os.appendChild(b);});
-      d.appendChild(os);a.appendChild(d);});
+    ex.questions.forEach((q,qi)=>a.appendChild(choiceQ(q,qi+1)));
   },
   letterpick(a,ex){
-    const g=el('div','lpgrid');
-    ex.words.forEach(w=>{const m=w.match(/\{([^}]+)\}/);const ans=m[1];const c=el('div','lpcard');c.dataset.choice='1';c.dataset.answer=String(ex.opts.indexOf(ans));
-      c.appendChild(el('div','word',w.replace(m[0],'<span class="hole">?</span>')));const os=el('div','lopts');const hole=c.querySelector('.hole');
-      ex.opts.forEach((o,k)=>{const b=el('button','opt',o);b.dataset.k=k;b.onclick=()=>{if(b.disabled)return;os.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
-        b.classList.add('sel');c.dataset.sel=k;hole.textContent=o;hole.classList.add('on');Sound.pick();};os.appendChild(b);});
-      c.appendChild(os);g.appendChild(c);});
-    a.appendChild(g);
+    const g=el('div','lpgrid');ex.words.forEach(w=>g.appendChild(lpCard(w,ex.opts)));a.appendChild(g);
+  },
+  letterdrag(a,ex){
+    const pal=el('div','pool palette');ex.opts.forEach(o=>{const c=makeChip(o,o);c.classList.add('stamp');pal.appendChild(c);});
+    a.appendChild(el('p','help palhelp','✋ Arrastra estas letras (puedes usarlas muchas veces):'));a.appendChild(pal);
+    const L=el('div','lines '+(ex.cls||''));
+    ex.lines.forEach(line=>{L.appendChild(el('p',null,line.replace(/\{([^}]+)\}/g,(_,ans)=>`<span class="gap zone lgap" data-cap="1" data-accept="${ans}" tabindex="0"></span>`)));});
+    a.appendChild(L);
+  },
+  review(a,ex){
+    const items=Object.entries(P.miss).filter(([k,v])=>ex.all||v.sec===S.id);
+    if(!items.length){a.dataset.empty='1';a.appendChild(el('div','note big',ex.all?'🎉 ¡No tienes fallos pendientes en ningún tema! Haz ejercicios y, si fallas alguna palabra, aparecerá aquí.':'🎉 ¡No tienes fallos pendientes en este tema! Si fallas alguna palabra en los ejercicios, aparecerá aquí para que la repases.'));return;}
+    const MAX=24,list=items.slice(0,MAX);
+    a.appendChild(el('p','help',`Tienes <b>${items.length}</b> ${items.length===1?'palabra':'palabras'} para repasar${items.length>MAX?` (ahora salen ${MAX})`:''}. Cuando aciertes una, desaparece.`));
+    const secE=sec=>(SECTIONS.find(x=>x.id===sec)||{}).emoji||'';
+    const picks=list.filter(([k,v])=>v.k==='pick'),chs=list.filter(([k,v])=>v.k==='choice'),tys=list.filter(([k,v])=>v.k==='type');
+    if(picks.length){const g=el('div','lpgrid');picks.forEach(([k,v])=>{const c=lpCard(v.w,v.opts);c.dataset.mkey=k;if(ex.all)c.prepend(el('span','rvtag',secE(v.sec)));g.appendChild(c);});a.appendChild(g);}
+    chs.forEach(([k,v],qi)=>{const d=choiceQ({q:(ex.all?secE(v.sec)+' ':'')+v.q,o:v.o,a:v.a,keep:v.keep},null);d.dataset.mkey=k;d.style.marginTop='12px';a.appendChild(d);});
+    if(tys.length){const L=el('div','lines list');tys.forEach(([k,v])=>{const p=el('p',null,(ex.all?secE(v.sec)+' ':'')+esc(v.q)+' ');
+      const i=el('input','tin');i.dataset.answers=v.a;i.dataset.mkey=k;i.autocomplete='off';i.setAttribute('autocapitalize','off');i.spellcheck=false;i.style.setProperty('--w',Math.max(120,v.a.split('|')[0].length*16+30)+'px');
+      p.appendChild(i);L.appendChild(p);});a.appendChild(L);}
   },
   poem(a,ex){
     const total=ex.stanzas.reduce((s,x)=>s+x.length,0);
     a.appendChild(el('div','poem',`<h3>${ex.poemTitle}</h3>`+ex.stanzas.map(st=>`<div class="st">${st.join('<br>')}</div>`).join('')));
-    a.appendChild(el('div','pq',`📏 ¿Cuántos <b>versos</b> tiene el poema? <input class="tin" inputmode="numeric" data-answers="${total}" autocomplete="off">`));
-    a.appendChild(el('div','pq',`🧱 ¿Cuántas <b>estrofas</b> tiene? <input class="tin" inputmode="numeric" data-answers="${ex.stanzas.length}" autocomplete="off">`));
+    const nums=(n,lo,hi)=>{const r=[];for(let x=Math.max(lo,n-2);r.length<5&&x<=hi;x++)r.push(String(x));return r;};
+    const vq=choiceQ({q:'📏 ¿Cuántos <b>versos</b> tiene el poema?',o:nums(total,1,20),a:nums(total,1,20).indexOf(String(total)),keep:true},null);vq.classList.add('numq');a.appendChild(vq);
+    const sq=choiceQ({q:'🧱 ¿Cuántas <b>estrofas</b> tiene?',o:['1','2','3','4','5'],a:ex.stanzas.length-1,keep:true},null);sq.classList.add('numq');a.appendChild(sq);
     a.appendChild(el('h4','sub','🎵 ¿Qué palabras riman? Arrastra a cada palabra la que rima con ella:'));
     a.appendChild(makePool(ex.rhymes.map(([l,r])=>makeChip(r,r))));
     const g=el('div','pairs');ex.rhymes.forEach(([l,r])=>{const p=el('div','pair',`<span class="w">${l}</span><span class="arrow">🎵</span>`);const s=el('div','slot zone');s.dataset.accept=r;s.dataset.cap='1';s.tabIndex=0;p.appendChild(s);g.appendChild(p);});
@@ -783,11 +873,11 @@ const BUILD={
 
 /* ---------- corregir / repetir ---------- */
 function addCheckBar(box,area,ex,id){
-  const bar=el('div','checkbar');const msg=el('span','msg',P.best[id]!=null?`Tu mejor nota: ${Math.round(P.best[id]*10)} / 10`:'Cuando termines, pulsa Corregir.');
+  const bar=el('div','checkbar');const msg=el('span','msg',ex.type==='review'?'Cuando termines, pulsa Corregir.':P.best[id]!=null?`Tu mejor nota: ${Math.round(P.best[id]*10)} / 10`:'Cuando termines, pulsa Corregir.');
   const b=el('button','btn check','✔ Corregir');bar.append(msg,b);box.appendChild(bar);
   b.onclick=()=>{
     const r=check(area);if(r.missing&&!confirm(`Te faltan ${r.missing} por responder. ¿Quieres corregir igualmente?`))return;
-    lock(area);const ratio=r.ok/r.total;P.best[id]=Math.max(P.best[id]||0,ratio);save();renderTabs();
+    lock(area);const ratio=r.ok/r.total;if(ex.type!=='review')P.best[id]=Math.max(P.best[id]||0,ratio);save();renderTabs();
     bar.className='checkbar '+(ratio===1?'good':'mid');
     msg.innerHTML=`<span class="score">${r.ok}/${r.total}</span>`+(ratio===1?'¡Perfecto! Todo correcto 🎉':ratio>=.7?'¡Muy bien! Mira lo que está en rojo y repítelo para sacar un 10.':'Fíjate en los errores en rojo y vuelve a intentarlo. ¡Tú puedes!');
     if(ratio===1){Sound.good();confetti(140);say(pick(['¡Fantástico! ⭐','¡Lo has bordado!','¡Eres un crack! 🎉']),'jump');}
@@ -796,18 +886,19 @@ function addCheckBar(box,area,ex,id){
     b.onclick=()=>{Sound.pick();renderStep();};
   };
 }
+function track(e,good){const k=e.dataset.mkey;if(!k)return;if(good)delete P.miss[k];else if(e.dataset.rv)P.miss[k]=JSON.parse(e.dataset.rv);}
 function check(area){
   let ok=0,total=0,missing=0;
-  area.querySelectorAll('.tin[data-answers]').forEach(i=>{total++;const v=norm(i.value);if(!v)missing++;const good=i.dataset.answers.split('|').map(norm).includes(v);if(good)ok++;i.classList.add(good?'ok':'ko');});
+  area.querySelectorAll('.tin[data-answers]').forEach(i=>{total++;const v=norm(i.value);if(!v)missing++;const good=i.dataset.answers.split('|').map(norm).includes(v);if(good)ok++;i.classList.add(good?'ok':'ko');if(v)track(i,good);});
   area.querySelectorAll('.zone[data-cap="1"]').forEach(z=>{total++;const c=z.querySelector('.chip');if(!c){missing++;z.classList.add('ko');return;}
-    const good=norm(z.dataset.accept)===c.dataset.val;if(good)ok++;c.classList.add(good?'ok':'ko');});
+    const good=norm(z.dataset.accept)===c.dataset.val;if(good)ok++;c.classList.add(good?'ok':'ko');track(z,good);});
   area.querySelectorAll('.chip[data-req]').forEach(c=>{total++;const z=c.closest('.bucket');if(!z){missing++;c.classList.add('ko');return;}
-    const good=z.dataset.accept===c.dataset.val;if(good)ok++;c.classList.add(good?'ok':'ko');});
+    const good=z.dataset.accept===c.dataset.val;if(good)ok++;c.classList.add(good?'ok':'ko');track(c,good);});
   area.querySelectorAll('[data-choice]').forEach(q=>{total++;const sel=q.dataset.sel;if(sel==null){missing++;q.classList.add('miss');return;}
-    const btn=q.querySelector(`.opt[data-k="${sel}"]`);const good=sel===q.dataset.answer;if(good)ok++;btn.classList.add(good?'ok':'ko');q.querySelector('.hole')?.classList.add(good?'ok':'ko');});
+    const btn=q.querySelector(`.opt[data-k="${sel}"]`);const good=sel===q.dataset.answer;if(good)ok++;btn.classList.add(good?'ok':'ko');q.querySelector('.hole')?.classList.add(good?'ok':'ko');track(q,good);});
   return{ok,total,missing};
 }
-function lock(area){area.querySelectorAll('.chip').forEach(c=>{c.classList.add('locked');c.classList.remove('sel');});area.querySelectorAll('input,.opt').forEach(i=>i.disabled=true);
+function lock(area){area.classList.add('locked');area.querySelectorAll('.chip').forEach(c=>{c.classList.add('locked');c.classList.remove('sel');});area.querySelectorAll('input,.opt').forEach(i=>i.disabled=true);
   area.querySelectorAll('.pool .chip:not(.ko)').forEach(c=>c.style.opacity=.5);}
 
 /* ================= arrastrar (ratón + táctil) — colocación libre ================= */
@@ -816,9 +907,16 @@ const targetAt=(x,y)=>{const e=document.elementFromPoint(x,y);return e?(e.closes
 function exOf(n){return n.closest('.ex');}
 function place(chip,target){
   if(exOf(chip)!==exOf(target))return false;
-  if(target.classList.contains('pool')){target.appendChild(chip);}
-  else{if(target.dataset.cap==='1'){const old=target.querySelector('.chip');if(old&&old!==chip)exOf(target).querySelector('.pool').appendChild(old);target.classList.remove('ko');}
-    (target.querySelector('.zone-items')||target).appendChild(chip);}
+  const stamp=chip.classList.contains('stamp');
+  if(target.classList.contains('pool')){
+    if(stamp){chip.classList.remove('src');return true;}
+    if(chip.classList.contains('lchip')){chip.remove();Sound.pick();return true;}  // letra copiada: se quita
+    target.appendChild(chip);
+  } else {
+    if(stamp){const c=makeChip(chip.textContent,chip.dataset.val);c.classList.add('lchip');chip.classList.remove('src');chip=c;}
+    if(target.dataset.cap==='1'){const old=target.querySelector('.chip');if(old&&old!==chip){if(old.classList.contains('lchip'))old.remove();else exOf(target).querySelector('.pool').appendChild(old);}target.classList.remove('ko');}
+    (target.querySelector('.zone-items')||target).appendChild(chip);
+  }
   chip.classList.remove('sel','src');Sound.drop();return true;
 }
 document.addEventListener('pointerdown',e=>{const c=e.target.closest('#stage .chip:not(.locked)');if(!c||(e.button!==undefined&&e.button!==0))return;D={chip:c,x0:e.clientX,y0:e.clientY,moved:false,id:e.pointerId};});
@@ -836,7 +934,7 @@ function autoScroll(){if(!D||!D.moved)return;const edge=Math.min(110,innerHeight
 function endDrag(e,cancel){
   if(!D||(e&&e.pointerId!==D.id))return;const d=D;D=null;hoverT?.classList.remove('hover');hoverT=null;
   if(!d.moved){if(cancel)return;
-    if(selected&&selected!==d.chip){const z=d.chip.closest('.zone');if(z){const s=selected;selected=null;place(s,z);return;}}
+    if(selected&&selected!==d.chip){const z=d.chip.closest('.zone');if(z){const s=selected;if(!s.classList.contains('stamp'))selected=null;place(s,z);if(s.classList.contains('stamp'))s.classList.add('sel');return;}}
     if(selected===d.chip){d.chip.classList.remove('sel');selected=null;}else{selected?.classList.remove('sel');selected=d.chip;d.chip.classList.add('sel');Sound.pick();}return;}
   const t=cancel?null:targetAt(e.clientX,e.clientY);
   if(t&&place(d.chip,t)){d.ghost.remove();}
@@ -845,7 +943,7 @@ function endDrag(e,cancel){
 document.addEventListener('pointerup',e=>endDrag(e,false));
 document.addEventListener('pointercancel',e=>endDrag(e,true));
 document.addEventListener('click',e=>{if(!selected)return;if(e.target.closest('.chip'))return;const t=e.target.closest('#stage .zone')||e.target.closest('#stage .pool');if(!t)return;
-  const c=selected;selected=null;if(!place(c,t))c.classList.remove('sel');});
+  const c=selected;const st=c.classList.contains('stamp')&&!t.classList.contains('pool');if(!st)selected=null;if(!place(c,t))c.classList.remove('sel');else if(st)c.classList.add('sel');});
 document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const c=e.target.closest?.('#stage .chip:not(.locked)');
   if(c){e.preventDefault();selected?.classList.remove('sel');selected=c;c.classList.add('sel');return;}
   const z=e.target.closest?.('#stage .zone');if(z&&selected){e.preventDefault();const s=selected;selected=null;place(s,z);}});
